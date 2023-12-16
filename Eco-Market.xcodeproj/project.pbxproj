@@ -13,9 +13,11 @@
 		21D3EC952B2D9A5D00C89055 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21D3EC932B2D9A5D00C89055 /* Main.storyboard */; };
 		21D3EC972B2D9A5F00C89055 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21D3EC962B2D9A5F00C89055 /* Assets.xcassets */; };
 		21D3EC9A2B2D9A5F00C89055 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21D3EC982B2D9A5F00C89055 /* LaunchScreen.storyboard */; };
+		6FCF9DAABEE505DE1832CA82 /* Pods_Eco_Market.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95B48C3807FE62E3B282D343 /* Pods_Eco_Market.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1ADA8F1D7206A711395C6ADE /* Pods-Eco-Market.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eco-Market.release.xcconfig"; path = "Target Support Files/Pods-Eco-Market/Pods-Eco-Market.release.xcconfig"; sourceTree = "<group>"; };
 		21D3EC8A2B2D9A5D00C89055 /* Eco-Market.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Eco-Market.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		21D3EC8D2B2D9A5D00C89055 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		21D3EC8F2B2D9A5D00C89055 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -24,6 +26,8 @@
 		21D3EC962B2D9A5F00C89055 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21D3EC992B2D9A5F00C89055 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		21D3EC9B2B2D9A5F00C89055 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		95B48C3807FE62E3B282D343 /* Pods_Eco_Market.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Eco_Market.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9F03281048435568C3B11EFC /* Pods-Eco-Market.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eco-Market.debug.xcconfig"; path = "Target Support Files/Pods-Eco-Market/Pods-Eco-Market.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FCF9DAABEE505DE1832CA82 /* Pods_Eco_Market.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +47,8 @@
 			children = (
 				21D3EC8C2B2D9A5D00C89055 /* Eco-Market */,
 				21D3EC8B2B2D9A5D00C89055 /* Products */,
+				B333179657293113561334DB /* Pods */,
+				546C46D551BCBFCD125D5B43 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,6 +74,24 @@
 			path = "Eco-Market";
 			sourceTree = "<group>";
 		};
+		546C46D551BCBFCD125D5B43 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				95B48C3807FE62E3B282D343 /* Pods_Eco_Market.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B333179657293113561334DB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9F03281048435568C3B11EFC /* Pods-Eco-Market.debug.xcconfig */,
+				1ADA8F1D7206A711395C6ADE /* Pods-Eco-Market.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -74,9 +99,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 21D3EC9E2B2D9A5F00C89055 /* Build configuration list for PBXNativeTarget "Eco-Market" */;
 			buildPhases = (
+				E83D4687A54AC4CB1A4E8151 /* [CP] Check Pods Manifest.lock */,
 				21D3EC862B2D9A5D00C89055 /* Sources */,
 				21D3EC872B2D9A5D00C89055 /* Frameworks */,
 				21D3EC882B2D9A5D00C89055 /* Resources */,
+				9CC2715787F1C5F1B3EFCD45 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -132,6 +159,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9CC2715787F1C5F1B3EFCD45 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Eco-Market/Pods-Eco-Market-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Eco-Market/Pods-Eco-Market-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Eco-Market/Pods-Eco-Market-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E83D4687A54AC4CB1A4E8151 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Eco-Market-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		21D3EC862B2D9A5D00C89055 /* Sources */ = {
@@ -282,6 +351,7 @@
 		};
 		21D3EC9F2B2D9A5F00C89055 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9F03281048435568C3B11EFC /* Pods-Eco-Market.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -309,6 +379,7 @@
 		};
 		21D3ECA02B2D9A5F00C89055 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1ADA8F1D7206A711395C6ADE /* Pods-Eco-Market.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
