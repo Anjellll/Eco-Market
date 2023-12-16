@@ -24,27 +24,27 @@ class MainTabBarController: UITabBarController {
     }
 
     private func setupTabBar() {
-        let mainViewController = ViewController()
+        let mainViewController = MainViewController()
         mainViewController.title = "Главная"
         mainViewController.tabBarItem.image = UIImage(named: "main_icon")
         mainViewController.tabBarItem.selectedImage = UIImage(named: "main_icon_selected")?.withRenderingMode(.alwaysOriginal)
         
-        let cartViewController = ViewController()
-        cartViewController.title = "Корзина"
-        cartViewController.tabBarItem.image = UIImage(named: "cart_icon")
-        cartViewController.tabBarItem.selectedImage = UIImage(named: "cart_icon_selected")?.withRenderingMode(.alwaysOriginal)
+        let basketViewController = BasketViewController()
+        basketViewController.title = "Корзина"
+        basketViewController.tabBarItem.image = UIImage(named: "basket_icon")
+        basketViewController.tabBarItem.selectedImage = UIImage(named: "basket_icon_selected")?.withRenderingMode(.alwaysOriginal)
 
-        let orderHistoryViewController = ViewController()
-        orderHistoryViewController.title = "История"
-        orderHistoryViewController.tabBarItem.image = UIImage(named: "history_icon")
-        orderHistoryViewController.tabBarItem.selectedImage = UIImage(named: "history_icon_selected")?.withRenderingMode(.alwaysOriginal)
+        let storyViewController = StoryViewController()
+        storyViewController.title = "История"
+        storyViewController.tabBarItem.image = UIImage(named: "story_icon")
+        storyViewController.tabBarItem.selectedImage = UIImage(named: "story_icon_selected")?.withRenderingMode(.alwaysOriginal)
 
-        let informationViewController = ViewController()
+        let informationViewController = InfoViewController()
         informationViewController.title = "Инфо"
         informationViewController.tabBarItem.image = UIImage(named: "info_icon")
         informationViewController.tabBarItem.selectedImage = UIImage(named: "info_icon_selected")?.withRenderingMode(.alwaysOriginal)
 
-        viewControllers = [mainViewController, cartViewController, orderHistoryViewController, informationViewController]
+        viewControllers = [mainViewController, basketViewController, storyViewController, informationViewController]
         selectedIndex = 0
         tabBar.isTranslucent = false
         tabBar.clipsToBounds = true
