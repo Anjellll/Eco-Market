@@ -48,7 +48,7 @@ class SearchViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints =  false
-//        collectionView.backgroundColor = .red
+//        collectionView.backgroundColor = .blue
         return collectionView
     }()
     
@@ -56,6 +56,7 @@ class SearchViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+//        collectionView.backgroundColor = .red
         return collectionView
     }()
     
@@ -80,7 +81,6 @@ class SearchViewController: UIViewController {
                 switch result {
                 case .success(let product):
                     self.allProductsData = product
-                    print("❤️‍🔥Items from serber: \(product.count)")
                     self.productsCollectionView.reloadData()
                 case .failure(let error):
                     print("Error fetching product categories: \(error)")
@@ -120,7 +120,7 @@ extension SearchViewController {
         }
         
         productsCollectionView.snp.makeConstraints {
-            $0.top.equalTo(categoryCollectionView.snp.bottom).offset(15)
+            $0.top.equalTo(categoryCollectionView.snp.bottom).offset(10)
             $0.height.equalTo(228)
             $0.width.equalTo(166)
             $0.leading.trailing.bottom.equalToSuperview()
@@ -191,10 +191,10 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets { // change num
         if collectionView == categoryCollectionView {
-            return UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+            return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         } else if collectionView == productsCollectionView {
         
-            return UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+            return UIEdgeInsets(top: 19, left: 16, bottom: 0, right: 16)
         }
         return UIEdgeInsets.zero
     }

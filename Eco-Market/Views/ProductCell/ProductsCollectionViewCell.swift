@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     
@@ -31,7 +32,7 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         let name = UILabel()
         name.textColor = .black
         name.numberOfLines = 0
-        name.lineBreakMode = .byCharWrapping
+        name.lineBreakMode = .byWordWrapping
         name.textAlignment = .left
         name.font = .systemFont(ofSize: 14, weight: .medium)
         return name
@@ -51,9 +52,13 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         button.contentMode = .center
         button.isUserInteractionEnabled = true
         button.setTitle("Добавить", for: .normal)
-//        button.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.backgroundColor = ColorConstants.mainGreen
+        button.layer.cornerRadius = 12
+        // button.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
         return button
     }()
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -81,41 +86,40 @@ extension ProductsCollectionViewCell {
     
     private func setupConstraints() {
         productCard.snp.makeConstraints {
+            $0.edges.equalToSuperview()
             $0.height.equalTo(228)
             $0.width.equalTo(166)
         }
         
         productImage.snp.makeConstraints {
-            $0.top.equalTo(productCard.snp.bottom).offset(4)
-            $0.left.equalTo(productCard.snp.right).offset(4)
-            $0.right.equalTo(productCard.snp.left).offset(-4)
+            $0.top.equalToSuperview().offset(4)
+            $0.left.equalToSuperview().offset(4)
+            $0.right.equalToSuperview().offset(-4)
             $0.height.equalTo(96)
             $0.width.equalTo(158)
         }
         
         productNameLabel.snp.makeConstraints {
-            $0.top.equalTo(productImage.snp.bottom).offset(4)
-            $0.left.equalTo(productCard.snp.right).offset(4)
-            $0.right.equalTo(productCard.snp.left).offset(-4)
+            $0.top.equalToSuperview().offset(104)
+            $0.left.equalToSuperview().offset(4)
+            $0.right.equalToSuperview().offset(-4)
             $0.height.equalTo(34)
             $0.width.equalTo(158)
         }
         
         productPrice.snp.makeConstraints {
-            $0.top.equalTo(productNameLabel.snp.bottom).offset(24)
-            $0.left.equalTo(productCard.snp.right).offset(4)
-            $0.right.equalTo(productCard.snp.left).offset(-144)
+            $0.left.equalToSuperview().offset(4)
             $0.height.equalTo(14)
-            $0.width.equalTo(38)
+            $0.width.equalTo(80)
+            $0.bottom.equalToSuperview().offset(-52)
         }
         
         addButton.snp.makeConstraints {
-            $0.top.equalTo(productNameLabel.snp.bottom).offset(54)  // ?
             $0.width.equalTo(158)
             $0.height.equalTo(32)
-            $0.left.equalTo(productCard.snp.right).offset(4)
-            $0.right.equalTo(productCard.snp.left).offset(-144)
-            $0.bottom.equalTo(productCard.snp.bottom).offset(-4)
+            $0.left.equalToSuperview().offset(4)
+            $0.right.equalToSuperview().offset(-4)
+            $0.bottom.equalToSuperview().offset(-4)
         }
     }
     
@@ -129,7 +133,7 @@ extension ProductsCollectionViewCell {
          }
          
          if let price = product.price {
-             productPrice.text = String("\(price)сом")
+             productPrice.text = String("\(price)с")
          } else {
              productPrice.text = "Цена"
          }
