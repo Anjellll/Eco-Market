@@ -69,6 +69,24 @@ class SearchViewController: UIViewController {
     override func loadView() {
         super.loadView()
         setUpUI()
+        fetchProduct()
+    }
+    
+    func fetchProduct() {
+        NetworkLayer.shared.fetchProduct(apiType: .getProductList) {  [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let product):
+                    self.allProductsData = product
+                    print("❤️‍🔥Items from serber: \(product.count)")
+                    self.productsCollectionView.reloadData()
+                case .failure(let error):
+                    print("Error fetching product categories: \(error)")
+                }
+            }
+        }
     }
 }
 
@@ -76,7 +94,7 @@ extension SearchViewController {
     private func setUpUI() {
         setUpSubviews()
         setUpConstraints()
-        configureCollectionViews() // тебе надо дать размеры для коллекции!!!
+        configureCollectionViews()
     }
     
     private func setUpSubviews() {
@@ -96,7 +114,6 @@ extension SearchViewController {
         
         categoryCollectionView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom).offset(15)
-//            make.width.equalTo(UIScreen.main.bounds.width) // ?
             $0.height.equalTo(28)
             $0.width.equalTo(69)
             $0.leading.trailing.equalToSuperview()
@@ -124,28 +141,71 @@ extension SearchViewController {
 // MARK: - UICollectionViewDataSource
 extension SearchViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        categoryData.count
+        if collectionView == categoryCollectionView {
+            return categoryData.count
+        } else if collectionView == productsCollectionView {
+            return allProductsData.count
+        }
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = categoryCollectionView.dequeueReusableCell(
-            withReuseIdentifier: CategoryCollectionViewCell.reuseIdentifier,
-            for: indexPath) as? CategoryCollectionViewCell else { fatalError() }
-        
-        let categoryProduct = categoryData[indexPath.row]
-        cell.displayInfo(product: categoryProduct)
-        return cell
+        if collectionView == categoryCollectionView {
+            guard let cell = categoryCollectionView.dequeueReusableCell(
+                withReuseIdentifier: CategoryCollectionViewCell.reuseIdentifier,
+                for: indexPath) as? CategoryCollectionViewCell else { fatalError() }
+            
+            let categoryProduct = categoryData[indexPath.row]
+            cell.displayInfo(product: categoryProduct)
+            return cell
+        } else if collectionView == productsCollectionView {
+            guard let cell = productsCollectionView.dequeueReusableCell(
+                withReuseIdentifier: ProductsCollectionViewCell.reuseIdentifier,
+                for: indexPath) as? ProductsCollectionViewCell else { fatalError() }
+            
+            let product = allProductsData[indexPath.row]
+            cell.displayInfo(product: product)
+            return cell
+        }
+        fatalError("Unexpected collection view")
     }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width / 4, height: collectionView.frame.height)
+        if collectionView == categoryCollectionView {
+            return CGSize(width: collectionView.frame.width / 4, height: collectionView.frame.height)
+            
+        } else if collectionView == productsCollectionView {
+            let numberOfColumns: CGFloat = 2
+            let totalSpacing = 2 * 16 + max(0, numberOfColumns - 1) * 11
+            let cellWidth = (collectionView.bounds.width - totalSpacing) / numberOfColumns
+            let cellHeight: CGFloat = 228
+
+            return CGSize(width: cellWidth, height: cellHeight)
+        }
+        
+        return CGSize.zero
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets { // change num
+        if collectionView == categoryCollectionView {
+            return UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+        } else if collectionView == productsCollectionView {
+        
+            return UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        }
+        return UIEdgeInsets.zero
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 8
+        if collectionView == categoryCollectionView {
+            return 8
+        } else if collectionView == productsCollectionView {
+            return 11
+        }
+        return 0
     }
 }
 
