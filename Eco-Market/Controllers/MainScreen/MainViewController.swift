@@ -61,6 +61,7 @@ extension MainViewController {
         setUpSubviews()
         setUpConstraints()
         configureCollectionViews()
+        congigureNavigationBar()
     }
     
     private func setUpSubviews() {
@@ -70,7 +71,7 @@ extension MainViewController {
     
     private func setUpConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(54)
+            $0.top.equalToSuperview().offset(64)
             $0.left.equalToSuperview().offset(119)
             $0.right.equalToSuperview().offset(-118)
             $0.width.equalTo(138)
@@ -85,6 +86,11 @@ extension MainViewController {
         }
     }
     
+    private func congigureNavigationBar() {
+        navigationController?.navigationBar.barTintColor = UIColor.black
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    }
+    
     private func configureCollectionViews() {
         categoryCollectionView.register(ProductCategoryCollectionViewCell.self, forCellWithReuseIdentifier: ProductCategoryCollectionViewCell.reuseIdentifier)
         categoryCollectionView.delegate = self
@@ -92,6 +98,7 @@ extension MainViewController {
     }
 }
 
+// MARK: - UICollectionViewDataSource
 extension MainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         categoryProductData.count
@@ -101,12 +108,31 @@ extension MainViewController: UICollectionViewDataSource {
         guard let cell = categoryCollectionView.dequeueReusableCell(
             withReuseIdentifier: ProductCategoryCollectionViewCell.reuseIdentifier,
             for: indexPath) as? ProductCategoryCollectionViewCell else { fatalError() }
+        
         let product = categoryProductData[indexPath.row]
         cell.displayInfo(product: product)
         
+        // Добавляем обработчик нажатия на ячейку
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCell(_:)))
+        cell.addGestureRecognizer(tapGesture)
+        
         return cell
     }
+
+    @objc func didTapCell(_ sender: UITapGestureRecognizer) {
+        guard let cell = sender.view as? ProductCategoryCollectionViewCell,
+              let indexPath = categoryCollectionView.indexPath(for: cell) else {
+            return
+        }
+        
+        let selectedProduct = categoryProductData[indexPath.row]
+        let searchViewController = SearchViewController()
+        searchViewController.selectedProduct = selectedProduct
+        navigationController?.pushViewController(searchViewController, animated: true)
+    }
 }
+
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension MainViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
