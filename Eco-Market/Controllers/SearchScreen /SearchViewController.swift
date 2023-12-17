@@ -21,6 +21,8 @@ class SearchViewController: UIViewController {
         CategoryModel(name: "Молочные продукты")
     ]
     
+    private var allProductsData = [ProductModel]()
+    
     private let searchBar: UISearchBar = {  // must have clean the code
         let search = UISearchBar()
         search.searchTextField.placeholder = "Быстрый поиск"
@@ -80,6 +82,7 @@ extension SearchViewController {
     private func setUpSubviews() {
         view.addSubview(searchBar)
         view.addSubview(categoryCollectionView)
+        view.addSubview(productsCollectionView)
     }
     
     private func setUpConstraints() {
@@ -91,12 +94,19 @@ extension SearchViewController {
             $0.width.equalTo(343)
         }
         
-        categoryCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(15)
+        categoryCollectionView.snp.makeConstraints {
+            $0.top.equalTo(searchBar.snp.bottom).offset(15)
 //            make.width.equalTo(UIScreen.main.bounds.width) // ?
-            make.height.equalTo(28)
-            make.width.equalTo(69)
-            make.leading.trailing.equalToSuperview()
+            $0.height.equalTo(28)
+            $0.width.equalTo(69)
+            $0.leading.trailing.equalToSuperview()
+        }
+        
+        productsCollectionView.snp.makeConstraints {
+            $0.top.equalTo(categoryCollectionView.snp.bottom).offset(15)
+            $0.height.equalTo(228)
+            $0.width.equalTo(166)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     
@@ -104,6 +114,10 @@ extension SearchViewController {
         categoryCollectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: CategoryCollectionViewCell.reuseIdentifier)
         categoryCollectionView.dataSource = self
         categoryCollectionView.delegate = self
+        
+        productsCollectionView.register(ProductsCollectionViewCell.self, forCellWithReuseIdentifier: ProductsCollectionViewCell.reuseIdentifier)
+        productsCollectionView.dataSource = self
+        productsCollectionView.delegate = self
     }
 }
 
