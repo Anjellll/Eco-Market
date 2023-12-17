@@ -31,5 +31,23 @@ final class NetworkLayer {
             }
         }
     }
+    
+    func fetchProduct(apiType: NetworkAPI, completion: @escaping (Result<[ProductModel], Error>) -> Void) {
+        let url = apiType.components.url!
+        
+        AF.request(url).responseData { response in
+            switch response.result {
+            case .success(let data):
+                do {
+                    let product = try JSONDecoder().decode([ProductModel].self, from: data)
+                    completion(.success(product))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
 }
 
