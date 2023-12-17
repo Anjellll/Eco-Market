@@ -11,7 +11,17 @@ class SearchViewController: UIViewController {
     
     var selectedProduct: ProductCategoryModel?
     
-    private let searchBar: UISearchBar = {
+    private var categoryData = [
+        CategoryModel(name: "Все"),
+        CategoryModel(name: "Фрукты"),
+        CategoryModel(name: "Сухофрукты"),
+        CategoryModel(name: "Овощи"),
+        CategoryModel(name: "Зелень"),
+        CategoryModel(name: "Чай кофе"),
+        CategoryModel(name: "Молочные продукты")
+    ]
+    
+    private let searchBar: UISearchBar = {  // must have clean the code
         let search = UISearchBar()
         search.searchTextField.placeholder = "Быстрый поиск"
         search.searchTextField.textAlignment = .left
@@ -36,6 +46,7 @@ class SearchViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints =  false
+//        collectionView.backgroundColor = .red
         return collectionView
     }()
     
@@ -63,10 +74,12 @@ extension SearchViewController {
     private func setUpUI() {
         setUpSubviews()
         setUpConstraints()
+        configureCollectionViews() // тебе надо дать размеры для коллекции!!!
     }
     
     private func setUpSubviews() {
         view.addSubview(searchBar)
+        view.addSubview(categoryCollectionView)
     }
     
     private func setUpConstraints() {
@@ -77,9 +90,50 @@ extension SearchViewController {
             $0.height.equalTo(44)
             $0.width.equalTo(343)
         }
+        
+        categoryCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.snp.bottom).offset(15)
+//            make.width.equalTo(UIScreen.main.bounds.width) // ?
+            make.height.equalTo(28)
+            make.width.equalTo(69)
+            make.leading.trailing.equalToSuperview()
+        }
+    }
+    
+    private func configureCollectionViews() {
+        categoryCollectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: CategoryCollectionViewCell.reuseIdentifier)
+        categoryCollectionView.dataSource = self
+        categoryCollectionView.delegate = self
     }
 }
 
+// MARK: - UICollectionViewDataSource
+extension SearchViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        categoryData.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = categoryCollectionView.dequeueReusableCell(
+            withReuseIdentifier: CategoryCollectionViewCell.reuseIdentifier,
+            for: indexPath) as? CategoryCollectionViewCell else { fatalError() }
+        
+        let categoryProduct = categoryData[indexPath.row]
+        cell.displayInfo(product: categoryProduct)
+        return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension SearchViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.frame.width / 4, height: collectionView.frame.height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 8
+    }
+}
 
 // MARK: -  UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {

@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2146DE5F2B2F37DE00219ADA /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2146DE5E2B2F37DE00219ADA /* SearchViewController.swift */; };
+		2146DE642B2F486200219ADA /* CategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2146DE632B2F486200219ADA /* CategoryCollectionViewCell.swift */; };
+		2146DE662B2F486E00219ADA /* ProductsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2146DE652B2F486E00219ADA /* ProductsCollectionViewCell.swift */; };
+		2146DE6B2B2F4A4D00219ADA /* CategoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2146DE6A2B2F4A4D00219ADA /* CategoryModel.swift */; };
 		21D3EC8E2B2D9A5D00C89055 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D3EC8D2B2D9A5D00C89055 /* AppDelegate.swift */; };
 		21D3EC902B2D9A5D00C89055 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D3EC8F2B2D9A5D00C89055 /* SceneDelegate.swift */; };
 		21D3EC972B2D9A5F00C89055 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21D3EC962B2D9A5F00C89055 /* Assets.xcassets */; };
@@ -33,6 +36,9 @@
 /* Begin PBXFileReference section */
 		1ADA8F1D7206A711395C6ADE /* Pods-Eco-Market.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eco-Market.release.xcconfig"; path = "Target Support Files/Pods-Eco-Market/Pods-Eco-Market.release.xcconfig"; sourceTree = "<group>"; };
 		2146DE5E2B2F37DE00219ADA /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		2146DE632B2F486200219ADA /* CategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewCell.swift; sourceTree = "<group>"; };
+		2146DE652B2F486E00219ADA /* ProductsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsCollectionViewCell.swift; sourceTree = "<group>"; };
+		2146DE6A2B2F4A4D00219ADA /* CategoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryModel.swift; sourceTree = "<group>"; };
 		21D3EC8A2B2D9A5D00C89055 /* Eco-Market.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Eco-Market.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		21D3EC8D2B2D9A5D00C89055 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		21D3EC8F2B2D9A5D00C89055 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -76,6 +82,47 @@
 				2146DE5E2B2F37DE00219ADA /* SearchViewController.swift */,
 			);
 			path = "SearchScreen ";
+			sourceTree = "<group>";
+		};
+		2146DE602B2F47A800219ADA /* CategoryCellOnMainVC */ = {
+			isa = PBXGroup;
+			children = (
+				21D3ECCB2B2E065F00C89055 /* ProductCategoryCollectionViewCell.swift */,
+			);
+			path = CategoryCellOnMainVC;
+			sourceTree = "<group>";
+		};
+		2146DE612B2F47CE00219ADA /* CategoryCellOnSearchVC */ = {
+			isa = PBXGroup;
+			children = (
+				2146DE632B2F486200219ADA /* CategoryCollectionViewCell.swift */,
+			);
+			path = CategoryCellOnSearchVC;
+			sourceTree = "<group>";
+		};
+		2146DE622B2F47E800219ADA /* ProductCell */ = {
+			isa = PBXGroup;
+			children = (
+				2146DE652B2F486E00219ADA /* ProductsCollectionViewCell.swift */,
+			);
+			path = ProductCell;
+			sourceTree = "<group>";
+		};
+		2146DE672B2F4A1100219ADA /* NetworkModels */ = {
+			isa = PBXGroup;
+			children = (
+				21D3ECC42B2DFE9A00C89055 /* ProductModel.swift */,
+				21D3ECC62B2DFF2300C89055 /* ProductCategoryModel.swift */,
+			);
+			path = NetworkModels;
+			sourceTree = "<group>";
+		};
+		2146DE682B2F4A2A00219ADA /* LocalModel */ = {
+			isa = PBXGroup;
+			children = (
+				2146DE6A2B2F4A4D00219ADA /* CategoryModel.swift */,
+			);
+			path = LocalModel;
 			sourceTree = "<group>";
 		};
 		21D3EC812B2D9A5D00C89055 = {
@@ -134,8 +181,8 @@
 		21D3ECA32B2DA37400C89055 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				21D3ECC42B2DFE9A00C89055 /* ProductModel.swift */,
-				21D3ECC62B2DFF2300C89055 /* ProductCategoryModel.swift */,
+				2146DE672B2F4A1100219ADA /* NetworkModels */,
+				2146DE682B2F4A2A00219ADA /* LocalModel */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -175,7 +222,9 @@
 		21D3ECA92B2DA7C600C89055 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				21D3ECCB2B2E065F00C89055 /* ProductCategoryCollectionViewCell.swift */,
+				2146DE622B2F47E800219ADA /* ProductCell */,
+				2146DE612B2F47CE00219ADA /* CategoryCellOnSearchVC */,
+				2146DE602B2F47A800219ADA /* CategoryCellOnMainVC */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -387,17 +436,20 @@
 				21D3ECC72B2DFF2300C89055 /* ProductCategoryModel.swift in Sources */,
 				21D3ECC32B2DD71B00C89055 /* NetworkAPI.swift in Sources */,
 				21D3ECBF2B2DD62A00C89055 /* InfoViewController.swift in Sources */,
+				2146DE6B2B2F4A4D00219ADA /* CategoryModel.swift in Sources */,
 				21D3ECBB2B2DD61C00C89055 /* BasketViewController.swift in Sources */,
 				21D3ECA72B2DA77C00C89055 /* AppCoordinator.swift in Sources */,
 				21D3ECB22B2DB1B300C89055 /* ColorConstants.swift in Sources */,
 				21D3ECC12B2DD6E600C89055 /* NetworkLayer.swift in Sources */,
 				21D3ECCC2B2E065F00C89055 /* ProductCategoryCollectionViewCell.swift in Sources */,
 				21D3ECCF2B2E0FCC00C89055 /* ReuseIdentifying.swift in Sources */,
+				2146DE642B2F486200219ADA /* CategoryCollectionViewCell.swift in Sources */,
 				21D3ECAF2B2DAA5800C89055 /* SizeConstants.swift in Sources */,
 				21D3ECAB2B2DA88A00C89055 /* MainTabBarController.swift in Sources */,
 				2146DE5F2B2F37DE00219ADA /* SearchViewController.swift in Sources */,
 				21D3ECC52B2DFE9A00C89055 /* ProductModel.swift in Sources */,
 				21D3ECCA2B2E04FF00C89055 /* DecodeHelper.swift in Sources */,
+				2146DE662B2F486E00219ADA /* ProductsCollectionViewCell.swift in Sources */,
 				21D3EC8E2B2D9A5D00C89055 /* AppDelegate.swift in Sources */,
 				21D3EC902B2D9A5D00C89055 /* SceneDelegate.swift in Sources */,
 				21D3ECB92B2DD60D00C89055 /* MainViewController.swift in Sources */,
