@@ -19,19 +19,19 @@ enum NetworkAPI {
     case postOrderCreate
     
     var host: String {
-        "neobook.online/ecobak"
+        "neobook.online"
     }
     
     var path: String {
         switch self {
         case .getProductList:
-            return "/product-list/"
+            return "/ecobak/product-list/"
         case .getProductCategoryList:
-            return "/product-category-list/"
+            return "/ecobak/product-category-list/"
         case .getOrderList:
-            return "/order-list/"
+            return "/ecobak/order-list/"
         case .postOrderCreate:
-            return "/order-create/"
+            return "/ecobak/order-create/"
         }
     }
     
@@ -44,4 +44,3 @@ enum NetworkAPI {
         return components
     }
 }
-

@@ -23,6 +23,9 @@
 		21D3ECC32B2DD71B00C89055 /* NetworkAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D3ECC22B2DD71B00C89055 /* NetworkAPI.swift */; };
 		21D3ECC52B2DFE9A00C89055 /* ProductModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D3ECC42B2DFE9A00C89055 /* ProductModel.swift */; };
 		21D3ECC72B2DFF2300C89055 /* ProductCategoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D3ECC62B2DFF2300C89055 /* ProductCategoryModel.swift */; };
+		21D3ECCA2B2E04FF00C89055 /* DecodeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D3ECC92B2E04FF00C89055 /* DecodeHelper.swift */; };
+		21D3ECCC2B2E065F00C89055 /* ProductCategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D3ECCB2B2E065F00C89055 /* ProductCategoryCollectionViewCell.swift */; };
+		21D3ECCF2B2E0FCC00C89055 /* ReuseIdentifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D3ECCE2B2E0FCC00C89055 /* ReuseIdentifying.swift */; };
 		6FCF9DAABEE505DE1832CA82 /* Pods_Eco_Market.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95B48C3807FE62E3B282D343 /* Pods_Eco_Market.framework */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +49,9 @@
 		21D3ECC22B2DD71B00C89055 /* NetworkAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkAPI.swift; sourceTree = "<group>"; };
 		21D3ECC42B2DFE9A00C89055 /* ProductModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductModel.swift; sourceTree = "<group>"; };
 		21D3ECC62B2DFF2300C89055 /* ProductCategoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryModel.swift; sourceTree = "<group>"; };
+		21D3ECC92B2E04FF00C89055 /* DecodeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodeHelper.swift; sourceTree = "<group>"; };
+		21D3ECCB2B2E065F00C89055 /* ProductCategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryCollectionViewCell.swift; sourceTree = "<group>"; };
+		21D3ECCE2B2E0FCC00C89055 /* ReuseIdentifying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseIdentifying.swift; sourceTree = "<group>"; };
 		95B48C3807FE62E3B282D343 /* Pods_Eco_Market.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Eco_Market.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F03281048435568C3B11EFC /* Pods-Eco-Market.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eco-Market.debug.xcconfig"; path = "Target Support Files/Pods-Eco-Market/Pods-Eco-Market.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -86,9 +92,10 @@
 				21D3ECA12B2DA32300C89055 /* Application  */,
 				21D3ECA22B2DA34B00C89055 /* Common */,
 				21D3ECA82B2DA7BB00C89055 /* Controllers */,
+				21D3ECC82B2E04DC00C89055 /* Helpers */,
 				21D3ECA32B2DA37400C89055 /* Models */,
-				21D3ECA42B2DA38900C89055 /* Resources */,
 				21D3ECA52B2DA3CE00C89055 /* Networking */,
+				21D3ECA42B2DA38900C89055 /* Resources */,
 				21D3ECA92B2DA7C600C89055 /* Views */,
 			);
 			path = "Eco-Market";
@@ -107,6 +114,7 @@
 		21D3ECA22B2DA34B00C89055 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				21D3ECCD2B2E0FAB00C89055 /* Extensions */,
 				21D3ECB02B2DB1AC00C89055 /* ColorConstants */,
 				21D3ECAD2B2DAA4800C89055 /* SizeConstants */,
 			);
@@ -156,6 +164,7 @@
 		21D3ECA92B2DA7C600C89055 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				21D3ECCB2B2E065F00C89055 /* ProductCategoryCollectionViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -214,6 +223,22 @@
 				21D3ECBE2B2DD62A00C89055 /* InfoViewController.swift */,
 			);
 			path = "InfoScreen ";
+			sourceTree = "<group>";
+		};
+		21D3ECC82B2E04DC00C89055 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				21D3ECC92B2E04FF00C89055 /* DecodeHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		21D3ECCD2B2E0FAB00C89055 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				21D3ECCE2B2E0FCC00C89055 /* ReuseIdentifying.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		546C46D551BCBFCD125D5B43 /* Frameworks */ = {
@@ -355,9 +380,12 @@
 				21D3ECA72B2DA77C00C89055 /* AppCoordinator.swift in Sources */,
 				21D3ECB22B2DB1B300C89055 /* ColorConstants.swift in Sources */,
 				21D3ECC12B2DD6E600C89055 /* NetworkLayer.swift in Sources */,
+				21D3ECCC2B2E065F00C89055 /* ProductCategoryCollectionViewCell.swift in Sources */,
+				21D3ECCF2B2E0FCC00C89055 /* ReuseIdentifying.swift in Sources */,
 				21D3ECAF2B2DAA5800C89055 /* SizeConstants.swift in Sources */,
 				21D3ECAB2B2DA88A00C89055 /* MainTabBarController.swift in Sources */,
 				21D3ECC52B2DFE9A00C89055 /* ProductModel.swift in Sources */,
+				21D3ECCA2B2E04FF00C89055 /* DecodeHelper.swift in Sources */,
 				21D3EC8E2B2D9A5D00C89055 /* AppDelegate.swift in Sources */,
 				21D3EC902B2D9A5D00C89055 /* SceneDelegate.swift in Sources */,
 				21D3ECB92B2DD60D00C89055 /* MainViewController.swift in Sources */,
