@@ -27,6 +27,7 @@ class ProductCategoryCollectionViewCell: UICollectionViewCell, ReuseIdentifying 
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.textAlignment = .left
+//        label.backgroundColor = .blue
         return label
     }()
     
@@ -59,7 +60,7 @@ class ProductCategoryCollectionViewCell: UICollectionViewCell, ReuseIdentifying 
             $0.left.equalToSuperview().offset(12)
             $0.right.equalToSuperview().offset(-12)
             $0.bottom.equalToSuperview().offset(-12)
-            $0.height.equalTo(40)
+            $0.height.equalTo(48)
             $0.width.equalTo(142)
         }
     }

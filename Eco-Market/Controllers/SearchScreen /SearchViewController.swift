@@ -48,7 +48,7 @@ class SearchViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints =  false
-//        collectionView.backgroundColor = .blue
+//        collectionView.backgroundColor = .red
         return collectionView
     }()
     
@@ -56,7 +56,6 @@ class SearchViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-//        collectionView.backgroundColor = .red
         return collectionView
     }()
     
@@ -115,7 +114,7 @@ extension SearchViewController {
         categoryCollectionView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom).offset(15)
             $0.height.equalTo(28)
-            $0.width.equalTo(69)
+//            $0.width.equalTo(69)
             $0.leading.trailing.equalToSuperview()
         }
         
@@ -175,23 +174,31 @@ extension SearchViewController: UICollectionViewDataSource {
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == categoryCollectionView {
-            return CGSize(width: collectionView.frame.width / 4, height: collectionView.frame.height)
+                let category = categoryData[indexPath.item].name
+                let label = UILabel()
+                label.text = category
+                label.font = .systemFont(ofSize: 16, weight: .medium)
+                label.sizeToFit()
+                
+                let width = label.frame.width + 34
+                let height = collectionView.frame.height
+                return CGSize(width: width, height: height)
             
-        } else if collectionView == productsCollectionView {
+            } else if collectionView == productsCollectionView {
             let numberOfColumns: CGFloat = 2
             let totalSpacing = 2 * 16 + max(0, numberOfColumns - 1) * 11
             let cellWidth = (collectionView.bounds.width - totalSpacing) / numberOfColumns
             let cellHeight: CGFloat = 228
-
+            
             return CGSize(width: cellWidth, height: cellHeight)
         }
         
         return CGSize.zero
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets { // change num
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if collectionView == categoryCollectionView {
-            return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+            return UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         } else if collectionView == productsCollectionView {
         
             return UIEdgeInsets(top: 19, left: 16, bottom: 0, right: 16)

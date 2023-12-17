@@ -16,10 +16,10 @@ class CategoryCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         label.numberOfLines = 0
         label.textColor = UIColor(red: 0.824, green: 0.82, blue: 0.835, alpha: 1)
         label.textAlignment = .center
-//        label.backgroundColor = .green
         label.layer.cornerRadius = 28 / 2
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor(red: 0.824, green: 0.82, blue: 0.835, alpha: 1).cgColor
+
         return label
     }()
     
@@ -31,13 +31,13 @@ class CategoryCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
 
 extension CategoryCollectionViewCell {
     private func setUpUI() {
         setUpSubviews()
         setUpConstraints()
+        layoutSubviews()
     }
     
     private func setUpSubviews() {
@@ -45,11 +45,11 @@ extension CategoryCollectionViewCell {
     }
     
     private func setUpConstraints() {
-        categoryLabel.snp.makeConstraints { maker in
-            maker.top.equalToSuperview()
-            maker.left.equalToSuperview().offset(5)
-            maker.right.equalToSuperview().offset(-5)
-            maker.height.equalTo(28)
+        categoryLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.left.equalToSuperview().offset(2)
+            $0.right.equalToSuperview().offset(-2)
+            $0.height.equalTo(28)
         }
     }
     
