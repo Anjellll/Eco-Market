@@ -65,6 +65,7 @@ class SearchViewController: UIViewController {
         
         view.backgroundColor = .white
         navigationItem.title = "Продукты"
+        searchBar.delegate = self
     }
     
     override func loadView() {
@@ -250,12 +251,22 @@ extension SearchViewController: UICollectionViewDelegate {
 }
 
 
-// MARK: -  UISearchBarDelegate
+// MARK: - UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
-    func searchBar(
-        _ searchBar: UISearchBar,
-        textDidChange searchText: String
-    ) {
-        
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filterProductsBySearchText(searchText)
+    }
+
+    private func filterProductsBySearchText(_ searchText: String) {
+        if searchText.isEmpty {
+            // Если поисковый запрос пуст, показать все продукты
+            allProductsData = categoryProductData
+        } else {
+            allProductsData = categoryProductData.filter {
+                $0.title?.lowercased().contains(searchText.lowercased()) ?? false
+            }
+        }
+
+        self.productsCollectionView.reloadData()
     }
 }
