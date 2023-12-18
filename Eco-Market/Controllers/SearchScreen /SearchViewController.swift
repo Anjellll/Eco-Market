@@ -43,13 +43,17 @@ class SearchViewController: UIViewController {
         return search
     }()
     
+    private lazy var noResultsView: NoResultView = {
+        var view = NoResultView()
+        return view
+    }()
+    
     private lazy var  categoryCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints =  false
-//        collectionView.backgroundColor = .red
         return collectionView
     }()
     
@@ -101,8 +105,11 @@ extension SearchViewController {
     
     private func setUpSubviews() {
         view.addSubview(searchBar)
+        view.addSubview(noResultsView)
         view.addSubview(categoryCollectionView)
         view.addSubview(productsCollectionView)
+//        noResultsView.addSubview(noResultIcon)
+//        noResultsView.addSubview(noResultLabel)
     }
     
     private func setUpConstraints() {
@@ -114,10 +121,16 @@ extension SearchViewController {
             $0.width.equalTo(343)
         }
         
+        noResultsView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(280)
+            $0.leading.equalToSuperview().inset(88)
+            $0.height.equalTo(266)
+            $0.width.equalTo(200)
+        }
+        
         categoryCollectionView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom).offset(15)
             $0.height.equalTo(28)
-//            $0.width.equalTo(69)
             $0.leading.trailing.equalToSuperview()
         }
         
@@ -256,17 +269,26 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         filterProductsBySearchText(searchText)
     }
-
+    
     private func filterProductsBySearchText(_ searchText: String) {
         if searchText.isEmpty {
             // Если поисковый запрос пуст, показать все продукты
             allProductsData = categoryProductData
         } else {
+            // Фильтровать продукты по поисковому запросу
             allProductsData = categoryProductData.filter {
                 $0.title?.lowercased().contains(searchText.lowercased()) ?? false
             }
         }
-
+        
+        if allProductsData.isEmpty {
+            // Показать noResultsView, если результаты отсутствуют
+            self.view.addSubview(noResultsView)
+        } else {
+            // Скрыть noResultsView, если есть результаты
+            noResultsView.removeFromSuperview()
+        }
+        
         self.productsCollectionView.reloadData()
     }
 }
