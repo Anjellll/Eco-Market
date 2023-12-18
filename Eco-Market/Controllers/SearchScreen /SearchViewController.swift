@@ -244,23 +244,14 @@ extension SearchViewController: UICollectionViewDelegate {
     }
 
     private func filterProductsByCategory(_ categoryId: Int) {
-        print("Selected category id: \(categoryId)")
-
-        // Отладочные выводы
-        print("Category Product Data: \(categoryProductData)")
-        print("Category Data: \(categoryData)")
-
         if categoryId == 0 {
             allProductsData = categoryProductData
         } else {
             // Фильтровать продукты по выбранной категории, учитывая nil
             allProductsData = categoryProductData.filter { $0.category == categoryId || ($0.category == nil && categoryId == 0) }
         }
-
-        print("Filtered products count: \(allProductsData.count)")
         self.productsCollectionView.reloadData()
     }
-
 }
 
 
