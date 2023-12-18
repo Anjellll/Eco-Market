@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - AllProduct
+// MARK: - ProductModel
 struct ProductModel: Codable {
     let id: Int?
     let title, description: String?

@@ -11,16 +11,17 @@ class SearchViewController: UIViewController {
     
     var selectedProduct: ProductCategoryModel?
     
-    private var categoryData = [
-        CategoryModel(name: "Все"),
-        CategoryModel(name: "Фрукты"),
-        CategoryModel(name: "Сухофрукты"),
-        CategoryModel(name: "Овощи"),
-        CategoryModel(name: "Зелень"),
-        CategoryModel(name: "Чай кофе"),
-        CategoryModel(name: "Молочные продукты")
+    private var categoryData: [CategoryModel] = [
+        CategoryModel(id: 0, name: "Все"),
+        CategoryModel(id: 1, name: "Фрукты"),
+        CategoryModel(id: 2, name: "Сухофрукты"),
+        CategoryModel(id: 3, name: "Фрукты"),
+        CategoryModel(id: 4, name: "Зелень"),
+        CategoryModel(id: 5, name: "Чай кофе"),
+        CategoryModel(id: 6, name: "Молочные продукты"),
     ]
     
+    private var categoryProductData = [ProductModel]()
     private var allProductsData = [ProductModel]()
     
     private let searchBar: UISearchBar = {  // must have clean the code
@@ -80,6 +81,7 @@ class SearchViewController: UIViewController {
                 switch result {
                 case .success(let product):
                     self.allProductsData = product
+                    self.categoryProductData = product
                     self.productsCollectionView.reloadData()
                 case .failure(let error):
                     print("Error fetching product categories: \(error)")
@@ -170,21 +172,22 @@ extension SearchViewController: UICollectionViewDataSource {
     }
 }
 
+
 // MARK: - UICollectionViewDelegateFlowLayout
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == categoryCollectionView {
-                let category = categoryData[indexPath.item].name
-                let label = UILabel()
-                label.text = category
-                label.font = .systemFont(ofSize: 16, weight: .medium)
-                label.sizeToFit()
-                
-                let width = label.frame.width + 34
-                let height = collectionView.frame.height
-                return CGSize(width: width, height: height)
+            let category = categoryData[indexPath.item].name
+            let label = UILabel()
+            label.text = category
+            label.font = .systemFont(ofSize: 16, weight: .medium)
+            label.sizeToFit()
             
-            } else if collectionView == productsCollectionView {
+            let width = label.frame.width + 34
+            let height = collectionView.frame.height
+            return CGSize(width: width, height: height)
+            
+        } else if collectionView == productsCollectionView {
             let numberOfColumns: CGFloat = 2
             let totalSpacing = 2 * 16 + max(0, numberOfColumns - 1) * 11
             let cellWidth = (collectionView.bounds.width - totalSpacing) / numberOfColumns
@@ -215,6 +218,37 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
         return 0
     }
 }
+
+
+// MARK: - UICollectionViewDelegate
+extension SearchViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == categoryCollectionView {
+            let selectedCategory = categoryData[indexPath.item].id
+            filterProductsByCategory(selectedCategory)
+        }
+    }
+
+    private func filterProductsByCategory(_ categoryId: Int) {
+        print("Selected category id: \(categoryId)")
+
+        // Отладочные выводы
+        print("Category Product Data: \(categoryProductData)")
+        print("Category Data: \(categoryData)")
+
+        if categoryId == 0 {
+            allProductsData = categoryProductData
+        } else {
+            // Фильтровать продукты по выбранной категории, учитывая nil
+            allProductsData = categoryProductData.filter { $0.category == categoryId || ($0.category == nil && categoryId == 0) }
+        }
+
+        print("Filtered products count: \(allProductsData.count)")
+        self.productsCollectionView.reloadData()
+    }
+
+}
+
 
 // MARK: -  UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
