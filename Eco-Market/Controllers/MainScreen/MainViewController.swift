@@ -91,6 +91,7 @@ extension MainViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
+
     private func configureCollectionViews() {
         categoryCollectionView.register(ProductCategoryCollectionViewCell.self, forCellWithReuseIdentifier: ProductCategoryCollectionViewCell.reuseIdentifier)
         categoryCollectionView.delegate = self

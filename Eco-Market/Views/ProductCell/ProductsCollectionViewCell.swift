@@ -12,6 +12,13 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     
     var product: ProductModel?
     
+    //для отслеживания состояния ячейки
+    private var isEditing: Bool = false {
+        didSet {
+            updateUI()
+        }
+    }
+    
     private lazy var productCard: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
@@ -55,10 +62,40 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = ColorConstants.mainGreen
         button.layer.cornerRadius = 12
-        // button.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         return button
     }()
-
+    
+    private lazy var plusButton: UIButton = {
+        let button = UIButton()
+        button.contentMode = .center
+        button.isUserInteractionEnabled = true
+        button.setTitle("+", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.backgroundColor = ColorConstants.mainGreen
+        button.layer.cornerRadius = 16
+        return button
+    }()
+    
+    private lazy var countLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.textColor = .black
+        label.backgroundColor = .blue
+        return label
+    }()
+    
+    private lazy var minusButton: UIButton = {
+        let button = UIButton()
+        button.contentMode = .center
+        button.isUserInteractionEnabled = true
+        button.setTitle("-", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.backgroundColor = ColorConstants.mainGreen
+        button.layer.cornerRadius = 16
+        return button
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -74,6 +111,7 @@ extension ProductsCollectionViewCell {
     private func setupUI() {
         setupSubviews()
         setupConstraints()
+        updateUI()
     }
     
     private func setupSubviews() {
@@ -82,6 +120,9 @@ extension ProductsCollectionViewCell {
         productCard.addSubview(productNameLabel)
         productCard.addSubview(productPrice)
         productCard.addSubview(addButton)
+        productCard.addSubview(plusButton)
+        productCard.addSubview(countLabel)
+        productCard.addSubview(minusButton)
     }
     
     private func setupConstraints() {
@@ -121,6 +162,40 @@ extension ProductsCollectionViewCell {
             $0.right.equalToSuperview().offset(-4)
             $0.bottom.equalToSuperview().offset(-4)
         }
+        
+        plusButton.snp.makeConstraints {
+            $0.width.equalTo(32)
+            $0.height.equalTo(32)
+            $0.left.equalToSuperview().offset(4)
+            $0.bottom.equalToSuperview().offset(-4)
+        }
+        
+        countLabel.snp.makeConstraints {
+            $0.width.equalTo(20)
+            $0.height.equalTo(18)
+            $0.left.equalTo(plusButton.snp.right).offset(37)
+            $0.bottom.equalToSuperview().offset(-11)
+        }
+        
+        minusButton.snp.makeConstraints {
+            $0.width.equalTo(32)
+            $0.height.equalTo(32)
+            $0.right.equalToSuperview().offset(-4)
+            $0.bottom.equalToSuperview().offset(-4)
+        }
+    }
+    
+    private func updateUI() {
+        plusButton.isHidden = !isEditing
+        countLabel.isHidden = !isEditing
+        minusButton.isHidden = !isEditing
+        addButton.isHidden = isEditing
+    }
+    
+    // Добавьте метод для обработки нажатия кнопки "Добавить"
+    @objc private func addButtonTapped() {
+        isEditing = !isEditing
+        
     }
     
      func displayInfo(product: ProductModel) {

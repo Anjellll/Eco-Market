@@ -66,8 +66,6 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .white
         navigationItem.title = "Продукты"
         searchBar.delegate = self
     }
@@ -101,6 +99,7 @@ extension SearchViewController {
         setUpSubviews()
         setUpConstraints()
         configureCollectionViews()
+        congigureNavigationBar()
     }
     
     private func setUpSubviews() {
@@ -108,8 +107,6 @@ extension SearchViewController {
         view.addSubview(noResultsView)
         view.addSubview(categoryCollectionView)
         view.addSubview(productsCollectionView)
-//        noResultsView.addSubview(noResultIcon)
-//        noResultsView.addSubview(noResultLabel)
     }
     
     private func setUpConstraints() {
@@ -140,6 +137,11 @@ extension SearchViewController {
             $0.width.equalTo(166)
             $0.leading.trailing.bottom.equalToSuperview()
         }
+    }
+    
+    private func congigureNavigationBar() {
+        navigationController?.navigationBar.barTintColor = UIColor.black
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
     private func configureCollectionViews() {
@@ -273,10 +275,8 @@ extension SearchViewController: UISearchBarDelegate {
         }
         
         if allProductsData.isEmpty {
-            // Показать noResultsView, если результаты отсутствуют
             self.view.addSubview(noResultsView)
         } else {
-            // Скрыть noResultsView, если есть результаты
             noResultsView.removeFromSuperview()
         }
         

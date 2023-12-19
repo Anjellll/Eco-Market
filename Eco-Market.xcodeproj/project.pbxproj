@@ -113,7 +113,6 @@
 		2146DE622B2F47E800219ADA /* ProductCell */ = {
 			isa = PBXGroup;
 			children = (
-				212662A42B3065A600B5D8AD /* CustomViews */,
 				2146DE652B2F486E00219ADA /* ProductsCollectionViewCell.swift */,
 			);
 			path = ProductCell;
@@ -233,6 +232,7 @@
 		21D3ECA92B2DA7C600C89055 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				212662A42B3065A600B5D8AD /* CustomViews */,
 				2146DE622B2F47E800219ADA /* ProductCell */,
 				2146DE612B2F47CE00219ADA /* CategoryCellOnSearchVC */,
 				2146DE602B2F47A800219ADA /* CategoryCellOnMainVC */,

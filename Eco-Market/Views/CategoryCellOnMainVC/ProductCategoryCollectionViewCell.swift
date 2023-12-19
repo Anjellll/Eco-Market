@@ -27,7 +27,6 @@ class ProductCategoryCollectionViewCell: UICollectionViewCell, ReuseIdentifying 
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.textAlignment = .left
-//        label.backgroundColor = .blue
         return label
     }()
     
@@ -65,7 +64,7 @@ class ProductCategoryCollectionViewCell: UICollectionViewCell, ReuseIdentifying 
         }
     }
     
-    private func addGradientLayer() {
+    private func addGradientLayer() {  // ?
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [
             UIColor(red: 0, green: 0, blue: 0, alpha: 0).cgColor,
