@@ -64,6 +64,22 @@ class SearchViewController: UIViewController {
         return collectionView
     }()
     
+    private lazy var basketButton: UIButton = {
+        let button = UIButton()
+        button.contentMode = .center
+        button.isUserInteractionEnabled = true
+        button.setTitle("Корзина 330c", for: .normal)
+        button.layer.cornerRadius = 24
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.backgroundColor = ColorConstants.mainGreen
+        let image = UIImage(named: "basket_icon2")
+        button.setImage(image, for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 16)
+        button.imageView?.contentMode = .scaleAspectFit
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Продукты"
@@ -107,6 +123,7 @@ extension SearchViewController {
         view.addSubview(noResultsView)
         view.addSubview(categoryCollectionView)
         view.addSubview(productsCollectionView)
+        view.addSubview(basketButton)
     }
     
     private func setUpConstraints() {
@@ -136,6 +153,13 @@ extension SearchViewController {
             $0.height.equalTo(228)
             $0.width.equalTo(166)
             $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        basketButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview().offset(-50)
+            $0.right.equalToSuperview().offset(-16)
+            $0.height.equalTo(48)
+            $0.width.equalTo(168)
         }
     }
     
