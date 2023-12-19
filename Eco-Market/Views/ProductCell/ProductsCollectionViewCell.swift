@@ -19,6 +19,13 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         }
     }
     
+    private var itemCount: Int = 0 {
+        didSet {
+            // Обновляем метку с текущим количеством товаров
+            countLabel.text = "\(itemCount)"
+        }
+    }
+    
     private lazy var productCard: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
@@ -74,6 +81,7 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = ColorConstants.mainGreen
         button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -82,7 +90,7 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         label.textColor = .black
-        label.backgroundColor = .blue
+//        label.backgroundColor = .blue
         return label
     }()
     
@@ -94,6 +102,7 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = ColorConstants.mainGreen
         button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(minusButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -163,7 +172,7 @@ extension ProductsCollectionViewCell {
             $0.bottom.equalToSuperview().offset(-4)
         }
         
-        plusButton.snp.makeConstraints {
+        minusButton.snp.makeConstraints {
             $0.width.equalTo(32)
             $0.height.equalTo(32)
             $0.left.equalToSuperview().offset(4)
@@ -171,13 +180,13 @@ extension ProductsCollectionViewCell {
         }
         
         countLabel.snp.makeConstraints {
-            $0.width.equalTo(20)
+            $0.width.equalTo(24)
             $0.height.equalTo(18)
-            $0.left.equalTo(plusButton.snp.right).offset(37)
+            $0.left.equalTo(minusButton.snp.right).offset(35)
             $0.bottom.equalToSuperview().offset(-11)
         }
         
-        minusButton.snp.makeConstraints {
+        plusButton.snp.makeConstraints {
             $0.width.equalTo(32)
             $0.height.equalTo(32)
             $0.right.equalToSuperview().offset(-4)
@@ -190,12 +199,35 @@ extension ProductsCollectionViewCell {
         countLabel.isHidden = !isEditing
         minusButton.isHidden = !isEditing
         addButton.isHidden = isEditing
+        
+        // Делаем кнопку "+" неактивной, если достигнуто максимальное количество товаров
+        plusButton.isEnabled = itemCount < 50
     }
     
     // Добавьте метод для обработки нажатия кнопки "Добавить"
     @objc private func addButtonTapped() {
         isEditing = !isEditing
-        
+        itemCount = 1
+    }
+    
+    @objc private func plusButtonTapped() {
+        if itemCount < 50 {
+            itemCount += 1
+            // Дополнительная логика по увеличению количества товара
+            
+            // Проверяем, нужно ли делать кнопку "+" неактивной
+            plusButton.isEnabled = itemCount < 50
+        }
+    }
+    
+    @objc private func minusButtonTapped() {
+        if itemCount > 0 {
+            itemCount -= 1
+            // Дополнительная логика по уменьшению количества товара
+            
+            // Проверяем, нужно ли делать кнопку "+" активной
+            plusButton.isEnabled = itemCount < 50
+        }
     }
     
      func displayInfo(product: ProductModel) {
