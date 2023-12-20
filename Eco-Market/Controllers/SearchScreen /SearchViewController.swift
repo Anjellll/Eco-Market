@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import RealmSwift
 
 class SearchViewController: UIViewController {
     
     var selectedProduct: ProductCategoryModel?
+    weak var delegate: ProductsCollectionViewCellDelegate?
     
     private var categoryData: [CategoryModel] = [
         CategoryModel(id: 0, name: "Все"),
@@ -21,8 +23,9 @@ class SearchViewController: UIViewController {
         CategoryModel(id: 6, name: "Молочные продукты"),
     ]
     
-    private var categoryProductData = [ProductModel]()
     private var allProductsData = [ProductModel]()
+    private var categoryProductData = [ProductModel]()
+    private var cartData: [Int: Results<CartItem>] = [:]  // ?
     
     private let searchBar: UISearchBar = {  // must have clean the code
         let search = UISearchBar()
@@ -67,16 +70,18 @@ class SearchViewController: UIViewController {
     private lazy var basketButton: UIButton = {
         let button = UIButton()
         button.contentMode = .center
-        button.isUserInteractionEnabled = true
-        button.setTitle("Корзина 330c", for: .normal)
         button.layer.cornerRadius = 24
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(UIColor.white, for: .normal)
-        button.backgroundColor = ColorConstants.mainGreen
         let image = UIImage(named: "basket_icon2")
         button.setImage(image, for: .normal)
-        button.imageEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 16)
+        button.isUserInteractionEnabled = true
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.backgroundColor = ColorConstants.mainGreen
         button.imageView?.contentMode = .scaleAspectFit
+        button.imageEdgeInsets = UIEdgeInsets(top: 12,
+                                              left: 16,
+                                              bottom: 12,
+                                              right: 124)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         return button
     }()
     
@@ -90,7 +95,10 @@ class SearchViewController: UIViewController {
         super.loadView()
         setUpUI()
         fetchProduct()
+        updateTotalBasketAmount()
+        resetBasket()   // -
     }
+    
     
     func fetchProduct() {
         NetworkLayer.shared.fetchProduct(apiType: .getProductList) {  [weak self] result in
@@ -177,7 +185,54 @@ extension SearchViewController {
         productsCollectionView.dataSource = self
         productsCollectionView.delegate = self
     }
+
 }
+
+// MARK: - ProductsCollectionViewCellDelegate
+extension SearchViewController: ProductsCollectionViewCellDelegate {
+    func updateTotalBasketAmount() {
+        let realm = try! Realm()
+        
+        if let cartItems = try? realm.objects(CartItem.self) {
+            updateBasketButton(cartItems: cartItems)
+        }
+    }
+    
+    func updateBasketButton(cartItems: Results<CartItem>) {
+        let totalAmount = cartItems.reduce(into: 0.0) { result, cartItem in
+            if let product = allProductsData.first(where: { $0.id == cartItem.productId }),
+               let itemPriceString = product.price,
+               let itemPrice = Double(itemPriceString) {
+                let itemTotal = Double(cartItem.quantity) * itemPrice
+                result += itemTotal
+            }
+        }
+        
+        DispatchQueue.main.async {
+            let buttonText = String(format: "Корзина %.0fс", totalAmount)
+            self.basketButton.setTitle(buttonText, for: .normal)
+        }
+    }
+    
+    
+    // надо удалить просто на время          // -
+    func resetBasket() {
+        let realm = try! Realm()
+        
+        // Находим все элементы в корзине
+        let cartItems = realm.objects(CartItem.self)
+        
+        // Удаляем все элементы из корзины
+        try! realm.write {
+            realm.delete(cartItems)
+        }
+        
+        // Обновляем UI после обнуления корзины
+        updateBasketButton(cartItems: realm.objects(CartItem.self))
+    }
+}
+
+
 
 // MARK: - UICollectionViewDataSource
 extension SearchViewController: UICollectionViewDataSource {
@@ -206,6 +261,7 @@ extension SearchViewController: UICollectionViewDataSource {
             
             let product = allProductsData[indexPath.row]
             cell.displayInfo(product: product)
+            cell.delegate = self
             return cell
         }
         fatalError("Unexpected collection view")
@@ -270,13 +326,26 @@ extension SearchViewController: UICollectionViewDelegate {
     }
 
     private func filterProductsByCategory(_ categoryId: Int) {
+        // Фильтруем продукты по выбранной категории
         if categoryId == 0 {
             allProductsData = categoryProductData
         } else {
-            // Фильтровать продукты по выбранной категории, учитывая nil
+            // Фильтруем продукты по выбранной категории, учитывая nil
             allProductsData = categoryProductData.filter { $0.category == categoryId || ($0.category == nil && categoryId == 0) }
         }
-        self.productsCollectionView.reloadData()
+
+        // Загружаем корзину для выбранной категории   // здесь надо менять/логика не работает
+        if let cartItems = cartData[categoryId] {
+            updateBasketButton(cartItems: cartItems)
+        } else {
+            let realm = try! Realm()
+            let cartItems = realm.objects(CartItem.self)
+            cartData[categoryId] = cartItems
+            updateBasketButton(cartItems: cartItems)
+        }
+
+        // Обновляем коллекцию продуктов
+        productsCollectionView.reloadData()
     }
 }
 

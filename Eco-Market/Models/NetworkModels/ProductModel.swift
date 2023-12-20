@@ -13,6 +13,6 @@ struct ProductModel: Codable {
     let title, description: String?
     let category: Int?
     let image: String?
-    let quantity: Int?
+    var quantity: Int?
     let price: String?
 }

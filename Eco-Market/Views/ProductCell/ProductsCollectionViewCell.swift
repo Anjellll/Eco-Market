@@ -7,12 +7,18 @@
 
 import UIKit
 import Kingfisher
+import RealmSwift
+
+protocol ProductsCollectionViewCellDelegate: AnyObject {
+    func updateTotalBasketAmount()
+}
 
 class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     
+    weak var delegate: ProductsCollectionViewCellDelegate?
+    let realm = try! Realm()
     var product: ProductModel?
     
-    //для отслеживания состояния ячейки
     private var isEditing: Bool = false {
         didSet {
             updateUI()
@@ -21,10 +27,10 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     
     private var itemCount: Int = 0 {
         didSet {
-            // Обновляем метку с текущим количеством товаров
-            countLabel.text = "\(itemCount)"
+            productCountLabel.text = "\(itemCount)"
         }
     }
+    
     
     private lazy var productCard: UIView = {
         let view = UIView()
@@ -85,12 +91,11 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         return button
     }()
     
-    private lazy var countLabel: UILabel = {
+    private lazy var productCountLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         label.textColor = .black
-//        label.backgroundColor = .blue
         return label
     }()
     
@@ -109,6 +114,7 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        updateUI()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -130,7 +136,7 @@ extension ProductsCollectionViewCell {
         productCard.addSubview(productPrice)
         productCard.addSubview(addButton)
         productCard.addSubview(plusButton)
-        productCard.addSubview(countLabel)
+        productCard.addSubview(productCountLabel)
         productCard.addSubview(minusButton)
     }
     
@@ -179,7 +185,7 @@ extension ProductsCollectionViewCell {
             $0.bottom.equalToSuperview().offset(-4)
         }
         
-        countLabel.snp.makeConstraints {
+        productCountLabel.snp.makeConstraints {
             $0.width.equalTo(24)
             $0.height.equalTo(18)
             $0.left.equalTo(minusButton.snp.right).offset(35)
@@ -196,60 +202,100 @@ extension ProductsCollectionViewCell {
     
     private func updateUI() {
         plusButton.isHidden = !isEditing
-        countLabel.isHidden = !isEditing
+        productCountLabel.isHidden = !isEditing
         minusButton.isHidden = !isEditing
         addButton.isHidden = isEditing
         
-        // Делаем кнопку "+" неактивной, если достигнуто максимальное количество товаров
         plusButton.isEnabled = itemCount < 50
+        // Обновляем итоговую сумму в корзине через делегата
+        delegate?.updateTotalBasketAmount()
     }
     
-    // Добавьте метод для обработки нажатия кнопки "Добавить"
     @objc private func addButtonTapped() {
+        guard let product = product else { return }
+        addToCart(product: product)
+        
         isEditing = !isEditing
         itemCount = 1
+        
+        updateUI()
     }
     
     @objc private func plusButtonTapped() {
+        guard let product = product else { return }
+        addToCart(product: product)
+        
         if itemCount < 50 {
             itemCount += 1
-            // Дополнительная логика по увеличению количества товара
             
-            // Проверяем, нужно ли делать кнопку "+" неактивной
             plusButton.isEnabled = itemCount < 50
         }
+        updateUI()
     }
+    
     
     @objc private func minusButtonTapped() {
-        if itemCount > 0 {
+        guard let product = product else { return }
+        
+        if itemCount > 1 {
             itemCount -= 1
-            // Дополнительная логика по уменьшению количества товара
-            
-            // Проверяем, нужно ли делать кнопку "+" активной
-            plusButton.isEnabled = itemCount < 50
+            removeFromCart(product: product)
+        } else if itemCount == 1 {
+            itemCount -= 1
+            removeFromCart(product: product)
+            isEditing = false
         }
+        // Обновляем UI после изменения состояния
+        updateUI()
     }
     
-     func displayInfo(product: ProductModel) {
-         self.product = product
-         
-         if let name = product.title {
-             productNameLabel.text = name
-         } else {
-             productNameLabel.text = "Название"
-         }
-         
-         if let price = product.price {
-             productPrice.text = String("\(price)с")
-         } else {
-             productPrice.text = "Цена"
-         }
-         
-         if let productImageURL = product.image,
-            let imageURL = URL(string: productImageURL) {
-             productImage.kf.setImage(with: imageURL, placeholder: UIImage(named: "placeholderImage"))
-         } else {
-             productImage.image = UIImage(named: "placeholderImage")
-         }
+    private func addToCart(product: ProductModel) {
+        try! realm.write {
+            if let existingCartItem = realm.objects(CartItem.self).filter("productId == %@", product.id).first {
+                existingCartItem.quantity += 1
+            } else {
+                let newCartItem = CartItem()
+                newCartItem.productId = product.id ?? 0
+                newCartItem.quantity = 1
+                realm.add(newCartItem)
+            }
+        }
+        updateUI()
+    }
+    
+    private func removeFromCart(product: ProductModel) {
+        try! realm.write {
+            if let existingCartItem = realm.objects(CartItem.self).filter("productId == %@", product.id).first {
+                existingCartItem.quantity -= 1
+                if existingCartItem.quantity == 0 {
+                    realm.delete(existingCartItem)
+                }
+            }
+        }
+        updateUI()
+    }
+    
+    
+    func displayInfo(product: ProductModel) {
+        self.product = product
+        
+        if let name = product.title {
+            productNameLabel.text = name
+        } else {
+            productNameLabel.text = "Название"
+        }
+        
+        if let price = product.price {
+            productPrice.text = String("\(price)с")
+        } else {
+            productPrice.text = "Цена"
+        }
+        
+        if let productImageURL = product.image,
+           let imageURL = URL(string: productImageURL) {
+            productImage.kf.setImage(with: imageURL, placeholder: UIImage(named: "placeholderImage"))
+        } else {
+            productImage.image = UIImage(named: "placeholderImage")
+        }
     }
 }
