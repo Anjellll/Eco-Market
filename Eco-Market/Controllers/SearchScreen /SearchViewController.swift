@@ -8,7 +8,7 @@
 import UIKit
 import RealmSwift
 
-class SearchViewController: UIViewController {
+class SearchViewController: UIViewController, UIViewControllerTransitioningDelegate {
     
     var selectedProduct: ProductCategoryModel?
     weak var delegate: ProductsCollectionViewCellDelegate?
@@ -262,10 +262,40 @@ extension SearchViewController: UICollectionViewDataSource {
             let product = allProductsData[indexPath.row]
             cell.displayInfo(product: product)
             cell.delegate = self
+    
+            // Добавьте Gesture Recognizer
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleCellTap(_:)))
+            cell.addGestureRecognizer(tapGesture)
+            
             return cell
         }
         fatalError("Unexpected collection view")
     }
+    
+    @objc func handleCellTap(_ gesture: UITapGestureRecognizer) {
+           // Получите индекс нажатой ячейки
+           if let indexPath = productsCollectionView.indexPathForItem(at: gesture.location(in: productsCollectionView)) {
+               // Создайте экземпляр вашего нового контроллера
+               let detailViewController = ProductDetailViewController()
+
+               // Например, передайте данные продукта
+               detailViewController.selectedProduct = allProductsData[indexPath.row]
+
+               // Установите стиль модальной презентации
+               detailViewController.modalPresentationStyle = .custom
+               detailViewController.transitioningDelegate = self
+
+               // Добавьте его на экран
+               present(detailViewController, animated: true, completion: nil)
+           }
+       }
+
+       // MARK: - UIViewControllerTransitioningDelegate
+
+       func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+           return HalfModalPresentationController(presentedViewController: presented, presenting: presenting)
+       }
+
 }
 
 
@@ -376,3 +406,4 @@ extension SearchViewController: UISearchBarDelegate {
         self.productsCollectionView.reloadData()
     }
 }
+
