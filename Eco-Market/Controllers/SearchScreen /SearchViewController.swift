@@ -8,10 +8,11 @@
 import UIKit
 import RealmSwift
 
-class SearchViewController: UIViewController, UIViewControllerTransitioningDelegate {
+class SearchViewController: UIViewController {
     
     var selectedProduct: ProductCategoryModel?
     weak var delegate: ProductsCollectionViewCellDelegate?
+    private var blurView: UIVisualEffectView?
     
     private var categoryData: [CategoryModel] = [
         CategoryModel(id: 0, name: "Все"),
@@ -99,7 +100,6 @@ class SearchViewController: UIViewController, UIViewControllerTransitioningDeleg
         resetBasket()   // -
     }
     
-    
     func fetchProduct() {
         NetworkLayer.shared.fetchProduct(apiType: .getProductList) {  [weak self] result in
             guard let self = self else { return }
@@ -185,54 +185,7 @@ extension SearchViewController {
         productsCollectionView.dataSource = self
         productsCollectionView.delegate = self
     }
-
 }
-
-// MARK: - ProductsCollectionViewCellDelegate
-extension SearchViewController: ProductsCollectionViewCellDelegate {
-    func updateTotalBasketAmount() {
-        let realm = try! Realm()
-        
-        if let cartItems = try? realm.objects(CartItem.self) {
-            updateBasketButton(cartItems: cartItems)
-        }
-    }
-    
-    func updateBasketButton(cartItems: Results<CartItem>) {
-        let totalAmount = cartItems.reduce(into: 0.0) { result, cartItem in
-            if let product = allProductsData.first(where: { $0.id == cartItem.productId }),
-               let itemPriceString = product.price,
-               let itemPrice = Double(itemPriceString) {
-                let itemTotal = Double(cartItem.quantity) * itemPrice
-                result += itemTotal
-            }
-        }
-        
-        DispatchQueue.main.async {
-            let buttonText = String(format: "Корзина %.0fс", totalAmount)
-            self.basketButton.setTitle(buttonText, for: .normal)
-        }
-    }
-    
-    
-    // надо удалить просто на время          // -
-    func resetBasket() {
-        let realm = try! Realm()
-        
-        // Находим все элементы в корзине
-        let cartItems = realm.objects(CartItem.self)
-        
-        // Удаляем все элементы из корзины
-        try! realm.write {
-            realm.delete(cartItems)
-        }
-        
-        // Обновляем UI после обнуления корзины
-        updateBasketButton(cartItems: realm.objects(CartItem.self))
-    }
-}
-
-
 
 // MARK: - UICollectionViewDataSource
 extension SearchViewController: UICollectionViewDataSource {
@@ -262,40 +215,11 @@ extension SearchViewController: UICollectionViewDataSource {
             let product = allProductsData[indexPath.row]
             cell.displayInfo(product: product)
             cell.delegate = self
-    
-            // Добавьте Gesture Recognizer
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleCellTap(_:)))
-            cell.addGestureRecognizer(tapGesture)
             
             return cell
         }
         fatalError("Unexpected collection view")
     }
-    
-    @objc func handleCellTap(_ gesture: UITapGestureRecognizer) {
-           // Получите индекс нажатой ячейки
-           if let indexPath = productsCollectionView.indexPathForItem(at: gesture.location(in: productsCollectionView)) {
-               // Создайте экземпляр вашего нового контроллера
-               let detailViewController = ProductDetailViewController()
-
-               // Например, передайте данные продукта
-               detailViewController.selectedProduct = allProductsData[indexPath.row]
-
-               // Установите стиль модальной презентации
-               detailViewController.modalPresentationStyle = .custom
-               detailViewController.transitioningDelegate = self
-
-               // Добавьте его на экран
-               present(detailViewController, animated: true, completion: nil)
-           }
-       }
-
-       // MARK: - UIViewControllerTransitioningDelegate
-
-       func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-           return HalfModalPresentationController(presentedViewController: presented, presenting: presenting)
-       }
-
 }
 
 
@@ -318,7 +242,6 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
             let totalSpacing = 2 * 16 + max(0, numberOfColumns - 1) * 11
             let cellWidth = (collectionView.bounds.width - totalSpacing) / numberOfColumns
             let cellHeight: CGFloat = 228
-            
             return CGSize(width: cellWidth, height: cellHeight)
         }
         
@@ -329,7 +252,6 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
         if collectionView == categoryCollectionView {
             return UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         } else if collectionView == productsCollectionView {
-        
             return UIEdgeInsets(top: 19, left: 16, bottom: 0, right: 16)
         }
         return UIEdgeInsets.zero
@@ -352,18 +274,20 @@ extension SearchViewController: UICollectionViewDelegate {
         if collectionView == categoryCollectionView {
             let selectedCategory = categoryData[indexPath.item].id
             filterProductsByCategory(selectedCategory)
+        }  else if collectionView == productsCollectionView {
+            let selectedProduct = allProductsData[indexPath.item]
+            showProductDetail(for: selectedProduct)
         }
     }
-
+    
     private func filterProductsByCategory(_ categoryId: Int) {
-        // Фильтруем продукты по выбранной категории
         if categoryId == 0 {
             allProductsData = categoryProductData
         } else {
             // Фильтруем продукты по выбранной категории, учитывая nil
             allProductsData = categoryProductData.filter { $0.category == categoryId || ($0.category == nil && categoryId == 0) }
         }
-
+        
         // Загружаем корзину для выбранной категории   // здесь надо менять/логика не работает
         if let cartItems = cartData[categoryId] {
             updateBasketButton(cartItems: cartItems)
@@ -373,12 +297,97 @@ extension SearchViewController: UICollectionViewDelegate {
             cartData[categoryId] = cartItems
             updateBasketButton(cartItems: cartItems)
         }
-
-        // Обновляем коллекцию продуктов
+        
         productsCollectionView.reloadData()
+    }
+    
+    private func showProductDetail(for product: ProductModel) {
+        let productDetailViewController = ProductDetailViewController()
+        productDetailViewController.selectedProduct = product
+        
+        let blurEffect = UIBlurEffect(style: .dark)  // размытие надо исправить  
+        blurView = UIVisualEffectView(effect: blurEffect)
+        blurView?.alpha = 0.8
+        blurView?.frame = view.bounds
+        blurView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurView?.tag = 123
+        blurView?.removeFromSuperview()
+        view.addSubview(blurView!)
+        
+        let sheetController = UISheetPresentationController(presentedViewController: productDetailViewController, presenting: nil)
+        sheetController.detents = [.medium()]
+        sheetController.prefersGrabberVisible = true
+        sheetController.delegate = self
+        
+        productDetailViewController.modalPresentationStyle = .custom
+        productDetailViewController.transitioningDelegate = self
+        
+        present(productDetailViewController, animated: true, completion: nil)
     }
 }
 
+// MARK: - UIViewControllerTransitioningDelegate, UIAdaptivePresentationControllerDelegate
+extension SearchViewController: UIViewControllerTransitioningDelegate, UIAdaptivePresentationControllerDelegate {
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        let presentationController = UISheetPresentationController(presentedViewController: presented, presenting: presenting)
+        presentationController.detents = [.medium()]
+        presentationController.prefersGrabberVisible = true
+        presentationController.delegate = self
+        presentationController.prefersGrabberVisible = false
+        
+        return presentationController
+    }
+    
+    func presentationController(_ presentationController: UIPresentationController, shouldDismiss presented: UIViewController) -> Bool {
+        return true
+    }
+}
+
+// MARK: - UISheetPresentationControllerDelegate
+extension SearchViewController: UISheetPresentationControllerDelegate {
+    func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
+        // Если выбрана нижняя точка привязки (detent), то удаляем размытие
+        if sheetPresentationController.selectedDetentIdentifier == .medium {
+            blurView?.removeFromSuperview()
+        }
+    }
+}
+
+// MARK: - ProductsCollectionViewCellDelegate
+extension SearchViewController: ProductsCollectionViewCellDelegate {
+    func updateTotalBasketAmount() {
+        let realm = try! Realm()
+        
+        if let cartItems = try? realm.objects(CartItem.self) {
+            updateBasketButton(cartItems: cartItems)
+        }
+    }
+    
+    func updateBasketButton(cartItems: Results<CartItem>) {
+        let totalAmount = cartItems.reduce(into: 0.0) { result, cartItem in
+            if let product = allProductsData.first(where: { $0.id == cartItem.productId }),
+               let itemPriceString = product.price,
+               let itemPrice = Double(itemPriceString) {
+                let itemTotal = Double(cartItem.quantity) * itemPrice
+                result += itemTotal
+            }
+        }
+        
+        DispatchQueue.main.async {
+            let buttonText = String(format: "Корзина %.0fс", totalAmount)
+            self.basketButton.setTitle(buttonText, for: .normal)
+        }
+    }
+    
+    func resetBasket() {  // надо удалить просто на время          // -
+        let realm = try! Realm()
+        let cartItems = realm.objects(CartItem.self)
+        try! realm.write {
+            realm.delete(cartItems)
+        }
+        updateBasketButton(cartItems: realm.objects(CartItem.self))
+    }
+}
 
 // MARK: - UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
@@ -388,10 +397,8 @@ extension SearchViewController: UISearchBarDelegate {
     
     private func filterProductsBySearchText(_ searchText: String) {
         if searchText.isEmpty {
-            // Если поисковый запрос пуст, показать все продукты
             allProductsData = categoryProductData
         } else {
-            // Фильтровать продукты по поисковому запросу
             allProductsData = categoryProductData.filter {
                 $0.title?.lowercased().contains(searchText.lowercased()) ?? false
             }
@@ -402,7 +409,6 @@ extension SearchViewController: UISearchBarDelegate {
         } else {
             noResultsView.removeFromSuperview()
         }
-        
         self.productsCollectionView.reloadData()
     }
 }
