@@ -8,7 +8,14 @@
 import UIKit
 import Kingfisher
 
+protocol ProductDetailDelegate: AnyObject {
+    func didAddToCart(product: ProductModel, quantity: Int)
+    func removeFromCart(product: ProductModel, quantity: Int)
+}
+
 class ProductDetailViewController: UIViewController {
+    
+    weak var delegate: ProductDetailDelegate?
 
     var selectedProduct: ProductModel? {
         didSet {
@@ -138,7 +145,7 @@ class ProductDetailViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         
-        if let product = selectedProduct {   // clean the code 
+        if let product = selectedProduct {   // clean the code
             if let productImageURL = product.image,
                let imageURL = URL(string: productImageURL) {
                 productImage.kf.setImage(with: imageURL, placeholder: UIImage(named: "placeholderImage"))
@@ -272,26 +279,41 @@ extension ProductDetailViewController {
     @objc func addButtonTapped() {
         isEditing = !isEditing
         itemCount = 1
-        
         updateUI()
+        
+        if let selectedProduct = selectedProduct {
+            delegate?.didAddToCart(product: selectedProduct, quantity: itemCount)
+        }
     }
     
     @objc func plusButtonTapped() {
         if itemCount < 50 {
             itemCount += 1
-            
             plusButton.isEnabled = itemCount < 50
         }
+
+        if let selectedProduct = selectedProduct {
+            delegate?.didAddToCart(product: selectedProduct, quantity: 1)
+        }
+
         updateUI()
     }
-    
+
     @objc func minusButtonTapped() {
         if itemCount > 1 {
             itemCount -= 1
+            if let product = selectedProduct {
+                delegate?.removeFromCart(product: product, quantity: 1) // Уменьшаем на 1, поскольку нажали кнопку "-"
+            }
         } else if itemCount == 1 {
             itemCount -= 1
             isEditing = false
+            if let product = selectedProduct {
+                delegate?.removeFromCart(product: product, quantity: 1) // Уменьшаем на 1, так как количество станет 0
+            }
         }
+
         updateUI()
     }
+
 }

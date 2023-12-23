@@ -304,6 +304,7 @@ extension SearchViewController: UICollectionViewDelegate {
     private func showProductDetail(for product: ProductModel) {
         let productDetailViewController = ProductDetailViewController()
         productDetailViewController.selectedProduct = product
+        productDetailViewController.delegate = self
         
         let blurEffect = UIBlurEffect(style: .dark)  // размытие надо исправить  
         blurView = UIVisualEffectView(effect: blurEffect)
@@ -387,6 +388,39 @@ extension SearchViewController: ProductsCollectionViewCellDelegate {
         }
         updateBasketButton(cartItems: realm.objects(CartItem.self))
     }
+}
+
+extension SearchViewController: ProductDetailDelegate {
+    func didAddToCart(product: ProductModel, quantity: Int) {
+        let realm = try! Realm()
+        try! realm.write {
+            if let existingCartItem = realm.objects(CartItem.self).filter("productId == %@", product.id).first {
+                existingCartItem.quantity += quantity
+            } else {
+                let newCartItem = CartItem()
+                newCartItem.productId = product.id ?? 0
+                newCartItem.quantity = quantity
+                realm.add(newCartItem)
+            }
+        }
+        updateBasketButton(cartItems: try! realm.objects(CartItem.self))
+    }
+
+    func removeFromCart(product: ProductModel, quantity: Int) {
+        let realm = try! Realm()
+        
+        try! realm.write {
+            if let existingCartItem = realm.objects(CartItem.self).filter("productId == %@", product.id).first {
+                existingCartItem.quantity -= quantity
+                if existingCartItem.quantity <= 0 {
+                    realm.delete(existingCartItem)
+                }
+            }
+        }
+        
+        updateBasketButton(cartItems: try! realm.objects(CartItem.self))
+    }
+
 }
 
 // MARK: - UISearchBarDelegate

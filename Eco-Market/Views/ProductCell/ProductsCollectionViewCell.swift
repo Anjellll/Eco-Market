@@ -273,7 +273,6 @@ extension ProductsCollectionViewCell {
         updateUI()
     }
     
-    
     func displayInfo(product: ProductModel) {
         self.product = product
         
