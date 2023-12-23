@@ -31,7 +31,6 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         }
     }
     
-    
     private lazy var productCard: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
@@ -232,7 +231,6 @@ extension ProductsCollectionViewCell {
         }
         updateUI()
     }
-    
     
     @objc private func minusButtonTapped() {
         guard let product = product else { return }

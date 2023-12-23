@@ -12,6 +12,24 @@ class ProductDetailViewController: UIViewController {
 
     var selectedProduct: ProductModel?
     
+    override var isEditing: Bool {
+        didSet {
+            updateUI()
+        }
+    }
+    
+    private var itemCount: Int = 0 {
+        didSet {
+            productCountLabel.text = "\(itemCount)"
+        }
+    }
+    
+    private var itemSum: Int = 0 {
+        didSet {
+            productSumLabel.text = "\(itemSum)c"
+        }
+    }
+    
     private lazy var productCard: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
@@ -65,7 +83,7 @@ class ProductDetailViewController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = ColorConstants.mainGreen
         button.layer.cornerRadius = 12
-//        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -77,7 +95,7 @@ class ProductDetailViewController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = ColorConstants.mainGreen
         button.layer.cornerRadius = 16
-//        button.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -97,10 +115,19 @@ class ProductDetailViewController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = ColorConstants.mainGreen
         button.layer.cornerRadius = 16
-//        button.addTarget(self, action: #selector(minusButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(minusButtonTapped), for: .touchUpInside)
         return button
     }()
-
+    
+    private lazy var productSumLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textColor = .black
+        label.backgroundColor = ColorConstants.mainGreen
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -119,7 +146,6 @@ class ProductDetailViewController: UIViewController {
                 productPrice.text = "Цена"
             }
             productDescription.text = product.description
-            
         }
     }
 }
@@ -128,6 +154,7 @@ extension ProductDetailViewController {
     private func setupUI() {
         setupSubviews()
         setupConstraints()
+        updateUI()
     }
     
     private func setupSubviews() {
@@ -137,10 +164,10 @@ extension ProductDetailViewController {
         productCard.addSubview(productPrice)
         productCard.addSubview(productDescription)
         view.addSubview(addButton)
-//        productCard.addSubview(addButton)
-//        productCard.addSubview(plusButton)
-//        productCard.addSubview(productCountLabel)
-//        productCard.addSubview(minusButton)
+        view.addSubview(plusButton)
+        view.addSubview(productCountLabel)
+        view.addSubview(minusButton)
+        view.addSubview(productSumLabel)
     }
     
     private func setupConstraints() {
@@ -189,5 +216,70 @@ extension ProductDetailViewController {
             $0.right.equalToSuperview().offset(-16)
             $0.bottom.equalToSuperview().offset(-25)
         }
+        
+        productSumLabel.snp.makeConstraints {
+            $0.width.equalTo(55)
+            $0.height.equalTo(24)
+            $0.left.equalToSuperview().offset(16)
+            $0.bottom.equalToSuperview().offset(-36)
+        }
+        
+        minusButton.snp.makeConstraints {
+            $0.width.equalTo(32)
+            $0.height.equalTo(32)
+            $0.left.equalTo(productSumLabel.snp.right).offset(130)
+            $0.bottom.equalToSuperview().offset(-36)
+        }
+    
+        productCountLabel.snp.makeConstraints {
+            $0.width.equalTo(18)
+            $0.height.equalTo(18)
+            $0.left.equalTo(minusButton.snp.right).offset(38)
+            $0.bottom.equalToSuperview().offset(-43)
+        }
+        
+        plusButton.snp.makeConstraints {
+            $0.width.equalTo(32)
+            $0.height.equalTo(32)
+            $0.right.equalToSuperview().offset(-16)
+            $0.bottom.equalToSuperview().offset(-36)
+        }
+    }
+    
+    private func updateUI() {
+        plusButton.isHidden = !isEditing
+        productCountLabel.isHidden = !isEditing
+        minusButton.isHidden = !isEditing
+        addButton.isHidden = isEditing
+        productSumLabel.isHidden = !isEditing
+        
+        plusButton.isEnabled = itemCount < 50
+    }
+    
+    @objc func addButtonTapped() {
+        isEditing = !isEditing
+        itemCount = 1
+        
+        updateUI()
+    }
+    
+    @objc func plusButtonTapped() {
+        if itemCount < 50 {
+            itemCount += 1
+            
+            plusButton.isEnabled = itemCount < 50
+        }
+        updateUI()
+    }
+    
+    @objc func minusButtonTapped() {
+        if itemCount > 1 {
+            itemCount -= 1
+        } else if itemCount == 1 {
+            itemCount -= 1
+            isEditing = false
+        }
+        // Обновляем UI после изменения состояния
+        updateUI()
     }
 }
