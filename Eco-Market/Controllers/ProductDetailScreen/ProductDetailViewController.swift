@@ -10,7 +10,20 @@ import Kingfisher
 
 class ProductDetailViewController: UIViewController {
 
-    var selectedProduct: ProductModel?
+    var selectedProduct: ProductModel? {
+        didSet {
+            if let priceString = selectedProduct?.price, let price = Double(priceString) {
+                productPriceValue = price
+            }
+        }
+    }
+    
+    private var productPriceValue: Double = 0.0 {
+        didSet {
+            productPrice.text = "\(productPriceValue)c"
+        }
+    }
+
     
     override var isEditing: Bool {
         didSet {
@@ -21,12 +34,6 @@ class ProductDetailViewController: UIViewController {
     private var itemCount: Int = 0 {
         didSet {
             productCountLabel.text = "\(itemCount)"
-        }
-    }
-    
-    private var itemSum: Int = 0 {
-        didSet {
-            productSumLabel.text = "\(itemSum)c"
         }
     }
     
@@ -121,10 +128,9 @@ class ProductDetailViewController: UIViewController {
     
     private lazy var productSumLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.textColor = .black
-        label.backgroundColor = ColorConstants.mainGreen
         return label
     }()
     
@@ -132,7 +138,7 @@ class ProductDetailViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         
-        if let product = selectedProduct {
+        if let product = selectedProduct {   // clean the code 
             if let productImageURL = product.image,
                let imageURL = URL(string: productImageURL) {
                 productImage.kf.setImage(with: imageURL, placeholder: UIImage(named: "placeholderImage"))
@@ -155,6 +161,7 @@ extension ProductDetailViewController {
         setupSubviews()
         setupConstraints()
         updateUI()
+        updateProductSumLabel()
     }
     
     private func setupSubviews() {
@@ -218,23 +225,23 @@ extension ProductDetailViewController {
         }
         
         productSumLabel.snp.makeConstraints {
-            $0.width.equalTo(55)
+            $0.width.equalTo(120)
             $0.height.equalTo(24)
             $0.left.equalToSuperview().offset(16)
-            $0.bottom.equalToSuperview().offset(-36)
+            $0.bottom.equalToSuperview().offset(-38)
         }
         
         minusButton.snp.makeConstraints {
             $0.width.equalTo(32)
             $0.height.equalTo(32)
-            $0.left.equalTo(productSumLabel.snp.right).offset(130)
+            $0.right.equalTo(productCountLabel.snp.left).offset(-35)
             $0.bottom.equalToSuperview().offset(-36)
         }
     
         productCountLabel.snp.makeConstraints {
-            $0.width.equalTo(18)
+            $0.width.equalTo(24)
             $0.height.equalTo(18)
-            $0.left.equalTo(minusButton.snp.right).offset(38)
+            $0.right.equalTo(plusButton.snp.left).offset(-35)
             $0.bottom.equalToSuperview().offset(-43)
         }
         
@@ -254,6 +261,12 @@ extension ProductDetailViewController {
         productSumLabel.isHidden = !isEditing
         
         plusButton.isEnabled = itemCount < 50
+        updateProductSumLabel()
+    }
+
+    private func updateProductSumLabel() {
+        let totalSum = Double(itemCount) * productPriceValue
+        productSumLabel.text = "\(totalSum)c"
     }
     
     @objc func addButtonTapped() {
@@ -279,7 +292,6 @@ extension ProductDetailViewController {
             itemCount -= 1
             isEditing = false
         }
-        // Обновляем UI после изменения состояния
         updateUI()
     }
 }
