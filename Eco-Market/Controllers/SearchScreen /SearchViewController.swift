@@ -28,24 +28,26 @@ class SearchViewController: UIViewController {
     private var categoryProductData = [ProductModel]()
     private var cartData: [Int: Results<CartItem>] = [:]  // ?
     
-    private let searchBar: UISearchBar = {  // must have clean the code
+    private let searchBar: UISearchBar = {
         let search = UISearchBar()
-        search.searchTextField.placeholder = "Быстрый поиск"
-        search.searchTextField.textAlignment = .left
-        search.searchTextField.font = .systemFont(ofSize: 16, weight: .medium)
-        search.barTintColor = UIColor(red: 0.973, green: 0.973, blue: 0.973, alpha: 1)
+        let textField = search.searchTextField
+        
+        search.placeholder = "Быстрый поиск"
+        search.barTintColor = UIColor(white: 0.973, alpha: 1)
         search.tintColor = .lightGray
-        search.searchTextField.textColor = .black
-        search.searchTextField.backgroundColor = UIColor(red: 0.973, green: 0.973, blue: 0.973, alpha: 1)
-        search.setImage(UIImage(systemName: "magnifyingglass"), for: .search, state: .normal)
         search.layer.cornerRadius = 16
         search.clipsToBounds = true
-        let attributes: [NSAttributedString.Key: Any] = [  // maybe delete
-            .foregroundColor: UIColor(red: 0.824, green: 0.82, blue: 0.835, alpha: 1),
-            .font: UIFont.systemFont(ofSize: 16, weight: .medium)
-        ]
+        
+        textField.textAlignment = .left
+        textField.font = .systemFont(ofSize: 16, weight: .medium)
+        textField.textColor = .black
+        textField.backgroundColor = UIColor(white: 0.973, alpha: 1)
+        
+        search.setImage(UIImage(systemName: "magnifyingglass"), for: .search, state: .normal)
+        
         return search
     }()
+
     
     private lazy var noResultsView: NoResultView = {
         var view = NoResultView()

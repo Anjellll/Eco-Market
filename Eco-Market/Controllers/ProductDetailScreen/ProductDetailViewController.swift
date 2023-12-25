@@ -16,6 +16,7 @@ protocol ProductDetailDelegate: AnyObject {
 class ProductDetailViewController: UIViewController {
     
     weak var delegate: ProductDetailDelegate?
+    var isAddButtonSelected: Bool = false  
 
     var selectedProduct: ProductModel? {
         didSet {
@@ -31,7 +32,6 @@ class ProductDetailViewController: UIViewController {
         }
     }
 
-    
     override var isEditing: Bool {
         didSet {
             updateUI()

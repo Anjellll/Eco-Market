@@ -219,6 +219,7 @@ extension ProductsCollectionViewCell {
         
         updateUI()
     }
+
     
     @objc private func plusButtonTapped() {
         guard let product = product else { return }
