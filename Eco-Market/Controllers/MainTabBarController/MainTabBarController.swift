@@ -55,7 +55,6 @@ class MainTabBarController: UITabBarController {
         tabBarAppearance.backgroundColor = .white
         UITabBar.appearance().standardAppearance = tabBarAppearance
     }
-
 }
 
 extension UIImage {
