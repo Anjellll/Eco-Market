@@ -10,6 +10,7 @@ import UIKit
 class BasketViewController: UIViewController {
 
     private var productData: [ProductModel] = []
+    private var basketProducts: [BasketModel] = []
     
     private lazy var clearLabel: UILabel = {
         var label = UILabel()
@@ -39,8 +40,13 @@ class BasketViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpUI()
+                setUpUI()
         fetchProduct()
+        
+        // Получаем продукты из корзины
+        basketProducts = BasketManager.shared.getBasketProducts()
+        
+        print("Basket products in viewDidLoad: \(basketProducts)")
     }
     
     func fetchProduct() {
@@ -64,7 +70,7 @@ extension BasketViewController {
     private func setUpUI() {
         setUpSubviews()
         setUpConstraints()
-        configureCollectionViews()
+//        configureCollectionViews()
     }
     
     private func setUpSubviews() {

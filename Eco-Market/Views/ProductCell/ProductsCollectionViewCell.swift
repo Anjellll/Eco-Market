@@ -214,13 +214,16 @@ extension ProductsCollectionViewCell {
         guard let product = product else { return }
         addToCart(product: product)
         
+        // Здесь product - это ваш объект ProductModel
+        BasketManager.shared.addToBasket(product: product)
+        print("Button tapped for product: \(product.title)")
+        
         isEditing = !isEditing
         itemCount = 1
         
         updateUI()
     }
 
-    
     @objc private func plusButtonTapped() {
         guard let product = product else { return }
         addToCart(product: product)

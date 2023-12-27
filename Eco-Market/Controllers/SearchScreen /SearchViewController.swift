@@ -48,7 +48,6 @@ class SearchViewController: UIViewController {
         return search
     }()
 
-    
     private lazy var noResultsView: NoResultView = {
         var view = NoResultView()
         return view
@@ -217,7 +216,7 @@ extension SearchViewController: UICollectionViewDataSource {
             let product = allProductsData[indexPath.row]
             cell.displayInfo(product: product)
             cell.delegate = self
-            
+            cell.product = allProductsData[indexPath.item]
             return cell
         }
         fatalError("Unexpected collection view")
@@ -358,6 +357,7 @@ extension SearchViewController: UISheetPresentationControllerDelegate {
 
 // MARK: - ProductsCollectionViewCellDelegate
 extension SearchViewController: ProductsCollectionViewCellDelegate {
+    
     func updateTotalBasketAmount() {
         let realm = try! Realm()
         
