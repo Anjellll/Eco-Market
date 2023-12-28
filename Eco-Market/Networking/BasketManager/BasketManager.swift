@@ -16,10 +16,8 @@ class BasketManager {
         let basketProduct = BasketModel()
         basketProduct.id = product.id ?? 0
         basketProduct.title = product.title ?? ""
-        basketProduct.descriptionText = product.description ?? ""
-        basketProduct.category = product.category ?? 0
         basketProduct.image = product.image ?? ""
-        basketProduct.quantity = 1 // Начальное количество при добавлении
+        basketProduct.quantity = 1
         basketProduct.price = product.price ?? ""
         
         try! realm.write {

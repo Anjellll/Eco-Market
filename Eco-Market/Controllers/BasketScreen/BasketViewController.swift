@@ -9,7 +9,6 @@ import UIKit
 
 class BasketViewController: UIViewController {
 
-    private var productData: [ProductModel] = []
     private var basketProducts: [BasketModel] = []
     
     private lazy var clearLabel: UILabel = {
@@ -29,6 +28,18 @@ class BasketViewController: UIViewController {
         return label
     }()
     
+    private lazy var placeOrderButton: UIButton = {
+        let button = UIButton()
+        button.contentMode = .center
+        button.isUserInteractionEnabled = true
+        button.setTitle("Оформить заказ", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.backgroundColor = ColorConstants.mainGreen
+        button.layer.cornerRadius = 12
+        button.addTarget(self, action: #selector(placeOrderButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
     private lazy var  basketCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -40,29 +51,11 @@ class BasketViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                setUpUI()
-        fetchProduct()
-        
-        // Получаем продукты из корзины
-        basketProducts = BasketManager.shared.getBasketProducts()
-        
-        print("Basket products in viewDidLoad: \(basketProducts)")
     }
     
-    func fetchProduct() {
-        NetworkLayer.shared.fetchProduct(apiType: .getProductList) {  [weak self] result in
-            guard let self = self else { return }
-            
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let product):
-                    self.productData = product
-                    self.basketCollectionView.reloadData()
-                case .failure(let error):
-                    print("Error fetching product categories: \(error)")
-                }
-            }
-        }
+    override func loadView() {
+        super.loadView()
+        setUpUI()
     }
 }
 
@@ -70,13 +63,15 @@ extension BasketViewController {
     private func setUpUI() {
         setUpSubviews()
         setUpConstraints()
-//        configureCollectionViews()
+        configureCollectionViews()
+        updateUI()
     }
     
     private func setUpSubviews() {
         view.addSubview(clearLabel)
         view.addSubview(basketLabel)
         view.addSubview(basketCollectionView)
+        view.addSubview(placeOrderButton)
     }
     
     private func setUpConstraints() {
@@ -102,6 +97,14 @@ extension BasketViewController {
             $0.right.equalToSuperview().offset(-16)
             $0.bottom.equalToSuperview()
         }
+        
+        placeOrderButton.snp.makeConstraints {
+            $0.height.equalTo(54)
+            $0.width.equalTo(343)
+            $0.left.equalToSuperview().offset(16)
+            $0.right.equalToSuperview().offset(-16)
+            $0.bottom.equalToSuperview().offset(-16)
+        }
     }
     
     private func configureCollectionViews() {
@@ -109,12 +112,25 @@ extension BasketViewController {
         basketCollectionView.delegate = self
         basketCollectionView.dataSource = self
     }
+    
+    func updateUI() {
+        basketProducts = BasketManager.shared.getBasketProducts()
+        print("Basket products in viewDidLoad: \(basketProducts)")
+        
+        basketCollectionView.reloadData()
+    }
+    
+    @objc private func placeOrderButtonTapped() {
+        let storyViewController = OrderViewController()
+        
+        navigationController?.pushViewController(storyViewController, animated: true)
+    }
 }
 
 // MARK: - UICollectionViewDataSource
 extension BasketViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        productData.count
+        basketProducts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -122,8 +138,7 @@ extension BasketViewController: UICollectionViewDataSource {
             withReuseIdentifier: BasketCollectionViewCell.reuseIdentifier,
             for: indexPath) as? BasketCollectionViewCell else { fatalError() }
         
-        let product = productData[indexPath.row]
-        cell.displayInfo(product: product)
+        cell.product = basketProducts[indexPath.item]
         return cell
     }
 }

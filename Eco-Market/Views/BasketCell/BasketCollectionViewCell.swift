@@ -8,8 +8,12 @@
 import UIKit
 
 class BasketCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
- 
-    var product: ProductModel?
+    
+    var product: BasketModel? {
+        didSet {
+            updateUI()
+        }
+    }
     
     private lazy var productImage: UIImageView = {
         var image = UIImageView()
@@ -104,7 +108,6 @@ extension BasketCollectionViewCell {
         }
         
         productPrice.snp.makeConstraints {
-//            $0.top.equalTo(piecePriceLabel.snp.bottom).offset(29)
             $0.left.equalTo(productImage.snp.right).offset(8)
             $0.height.equalTo(14)
             $0.width.equalTo(90)
@@ -112,7 +115,6 @@ extension BasketCollectionViewCell {
         }
         
         deleteImage.snp.makeConstraints {
-//            $0.top.equalToSuperview().offset(8)
             $0.left.equalToSuperview().offset(6)
             $0.height.equalTo(32)
             $0.width.equalTo(32)
@@ -120,29 +122,16 @@ extension BasketCollectionViewCell {
         }
     }
     
-    func displayInfo(product: ProductModel) {
-        self.product = product
+    private func updateUI() {
+        guard let product = product else { return }
         
-        if let productName = product.title {
-            productNameLabel.text = productName
-        } else {
-            productNameLabel.text = "Название"
-        }
+        productNameLabel.text = product.title ?? "Название"
         
-        if let price = product.price {
-            productPrice.text = String("\(price)с")
-        } else {
-            productPrice.text = "Цена"
-        }
+        productPrice.text = String("\(product.price)с") ?? "Цена"
         
-        if let piece = product.price {
-            piecePriceLabel.text = String("Цена \(piece) с за шт")
-        } else {
-            piecePriceLabel.text = "Штук"
-        }
+        piecePriceLabel.text = String("Цена \(product.price) с за шт")
         
-        if let productImageURL = product.image,
-           let imageURL = URL(string: productImageURL) {
+        if let imageURL = URL(string: product.image ?? "") {
             productImage.kf.setImage(with: imageURL, placeholder: UIImage(named: "placeholderImage"))
         } else {
             productImage.image = UIImage(named: "placeholderImage")

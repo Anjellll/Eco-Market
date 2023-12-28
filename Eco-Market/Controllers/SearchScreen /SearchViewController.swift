@@ -109,7 +109,7 @@ class SearchViewController: UIViewController {
                 switch result {
                 case .success(let product):
                     self.allProductsData = product
-                    self.categoryProductData = product
+//                    self.categoryProductData = product
                     self.productsCollectionView.reloadData()
                 case .failure(let error):
                     print("Error fetching product categories: \(error)")

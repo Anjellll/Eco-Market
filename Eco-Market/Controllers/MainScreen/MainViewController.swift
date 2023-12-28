@@ -36,10 +36,10 @@ class MainViewController: UIViewController {
     override func loadView() {
         super.loadView()
         setUpUI()
-        fetchcategory()
+        fetchCategory()
     }
     
-    func fetchcategory() {
+    func fetchCategory() {
         NetworkLayer.shared.fetchProductCategory(apiType: .getProductCategoryList) { [weak self] result in
             guard let self = self else { return }
 
@@ -112,7 +112,6 @@ extension MainViewController: UICollectionViewDataSource {
         let product = categoryProductData[indexPath.row]
         cell.displayInfo(product: product)
         
-        // Добавляем обработчик нажатия на ячейку
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCell(_:)))
         cell.addGestureRecognizer(tapGesture)
         
