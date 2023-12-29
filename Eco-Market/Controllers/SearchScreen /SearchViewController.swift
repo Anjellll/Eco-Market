@@ -98,7 +98,7 @@ class SearchViewController: UIViewController {
         setUpUI()
         fetchProduct()
         updateTotalBasketAmount()
-        resetBasket()   // -
+//        resetBasket()   // -
     }
     
     func fetchProduct() {
@@ -109,7 +109,7 @@ class SearchViewController: UIViewController {
                 switch result {
                 case .success(let product):
                     self.allProductsData = product
-//                    self.categoryProductData = product
+                    self.categoryProductData = product
                     self.productsCollectionView.reloadData()
                 case .failure(let error):
                     print("Error fetching product categories: \(error)")
@@ -422,7 +422,6 @@ extension SearchViewController: ProductDetailDelegate {
         
         updateBasketButton(cartItems: try! realm.objects(CartItem.self))
     }
-
 }
 
 // MARK: - UISearchBarDelegate

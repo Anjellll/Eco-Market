@@ -19,6 +19,8 @@ class ProductsCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     let realm = try! Realm()
     var product: ProductModel?
     
+    var basket: BasketModel?
+    
     private var isEditing: Bool = false {
         didSet {
             updateUI()
@@ -211,18 +213,28 @@ extension ProductsCollectionViewCell {
     }
     
     @objc private func addButtonTapped() {
-        guard let product = product else { return }
-        addToCart(product: product)
-        
-        // Здесь product - это ваш объект ProductModel
-        BasketManager.shared.addToBasket(product: product)
-        print("Button tapped for product: \(product.title)")
-        
-        isEditing = !isEditing
-        itemCount = 1
-        
-        updateUI()
-    }
+           guard let product = product else { return }
+           
+           // Создаем BasketModel на основе ProductModel для добавления в корзину
+           let basketItem = BasketModel()
+           basketItem.id = product.id ?? 0
+           basketItem.title = product.title ?? ""
+           basketItem.descriptionText = product.description ?? ""
+           basketItem.category = product.category ?? 0
+           basketItem.image = product.image ?? ""
+           basketItem.quantity = 0 // Начальное количество в корзине
+           basketItem.price = product.price ?? ""
+           
+           addToCart(product: product)
+           BasketManager.shared.addToBasket(product: basketItem)
+           
+           print("🐙Button tapped for product: \(product.title)")
+           
+           isEditing = !isEditing
+           itemCount = 1
+           
+           updateUI()
+       }
 
     @objc private func plusButtonTapped() {
         guard let product = product else { return }

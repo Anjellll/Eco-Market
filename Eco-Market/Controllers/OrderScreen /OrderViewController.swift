@@ -21,7 +21,10 @@ class OrderViewController: UIViewController {
         let view = UIView()
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.backgroundColor =  UIColor(red: 0.824, green: 0.82, blue: 0.835, alpha: 1).cgColor
+        view.layer.backgroundColor =  UIColor(red: 0.824,
+                                              green: 0.82,
+                                              blue: 0.835,
+                                              alpha: 1).cgColor
         return view
     }()
     
@@ -37,7 +40,10 @@ class OrderViewController: UIViewController {
         let view = UIView()
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.backgroundColor =  UIColor(red: 0.824, green: 0.82, blue: 0.835, alpha: 1).cgColor
+        view.layer.backgroundColor =  UIColor(red: 0.824,
+                                              green: 0.82,
+                                              blue: 0.835,
+                                              alpha: 1).cgColor
         return view
     }()
     
@@ -54,7 +60,10 @@ class OrderViewController: UIViewController {
         let view = UIView()
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.backgroundColor =  UIColor(red: 0.824, green: 0.82, blue: 0.835, alpha: 1).cgColor
+        view.layer.backgroundColor =  UIColor(red: 0.824,
+                                              green: 0.82,
+                                              blue: 0.835,
+                                              alpha: 1).cgColor
         return view
     }()
     
@@ -71,7 +80,10 @@ class OrderViewController: UIViewController {
         let view = UIView()
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.backgroundColor =  UIColor(red: 0.824, green: 0.82, blue: 0.835, alpha: 1).cgColor
+        view.layer.backgroundColor =  UIColor(red: 0.824,
+                                              green: 0.82,
+                                              blue: 0.835,
+                                              alpha: 1).cgColor
         return view
     }()
     

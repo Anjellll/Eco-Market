@@ -6,18 +6,22 @@
 //
 
 import UIKit
+import RealmSwift
 
 class BasketViewController: UIViewController {
 
-    private var basketProducts: [BasketModel] = []
+    private var basketProducts: Results<BasketModel>!
+    private var notificationToken: NotificationToken?
     
-    private lazy var clearLabel: UILabel = {
-        var label = UILabel()
-        label.text = "Oчистить"
-        label.textColor = .red
-        label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.textAlignment = .center
-        return label
+    private lazy var clearButton: UIButton = {
+        var button = UIButton()
+        button.setTitle("Очистить", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.contentMode = .center
+        button.setTitleColor(.red, for: .normal) 
+        button.isUserInteractionEnabled = true
+        button.addTarget(self, action: #selector(clearBasket), for: .touchUpInside)
+        return button
     }()
     
     private lazy var basketLabel: UILabel = {
@@ -51,11 +55,38 @@ class BasketViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
     }
     
     override func loadView() {
         super.loadView()
         setUpUI()
+        observeRealmChanges()
+    }
+    
+    deinit {
+        notificationToken?.invalidate()
+    }
+    
+    private func observeRealmChanges() {
+        notificationToken = BasketManager.shared.getBasketProducts().observe { [weak self] changes in
+            guard let coll = self?.basketCollectionView else { return }
+            
+            switch changes {
+            case .initial, .update(_, _, _, _):
+                self?.basketCollectionView.reloadData()
+                
+            case .error(let error):
+                print("Error observing Realm changes: \(error)")
+            }
+        }
+    }
+    
+    @objc private func clearBasket() {
+        print("Test button tapped")
+        BasketManager.shared.clearBasket()
+        BasketManager.shared.printBasketCount()
     }
 }
 
@@ -68,14 +99,14 @@ extension BasketViewController {
     }
     
     private func setUpSubviews() {
-        view.addSubview(clearLabel)
+        view.addSubview(clearButton)
         view.addSubview(basketLabel)
         view.addSubview(basketCollectionView)
         view.addSubview(placeOrderButton)
     }
     
     private func setUpConstraints() {
-        clearLabel.snp.makeConstraints {
+        clearButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(57)
             $0.left.equalToSuperview().offset(16)
             $0.width.equalTo(82)
@@ -125,6 +156,9 @@ extension BasketViewController {
         
         navigationController?.pushViewController(storyViewController, animated: true)
     }
+    
+    
+
 }
 
 // MARK: - UICollectionViewDataSource
